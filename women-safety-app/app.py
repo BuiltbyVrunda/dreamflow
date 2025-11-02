@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime
 import requests
 import os
+import argparse
 from dotenv import load_dotenv
 import geocoder
 from math import radians, cos, sin, asin, sqrt, atan2
@@ -36,27 +37,174 @@ from app.models import db
 from app.auth_models import User
 db.init_app(app)
 
-"""
-Application runner
-- Use the Flask application factory in app/__init__.py
-- All routes and APIs are defined in the blueprint (app/routes.py)
-This avoids duplicate endpoint definitions and startup conflicts.
-"""
+# Create tables and run migrations
+with app.app_context():
+    db.create_all()
+    # Lightweight migration: add new columns if missing (SQLite only)
+    try:
+        with db.engine.connect() as conn:
+            # Migrate users table
+            res = conn.execute(text("PRAGMA table_info(users);"))
+            existing_cols = {row[1] for row in res}
+            user_cols = {
+                'username': 'VARCHAR(50)',
+                'home_city_district': 'TEXT',
+                'address': 'TEXT',
+                'age_range': 'TEXT',
+                'gender_presentation': 'TEXT',
+                'allergies': 'TEXT',
+                'chronic_conditions': 'TEXT',
+                'disability': 'TEXT',
+                'primary_contact_name': 'TEXT',
+                'primary_contact_phone': 'TEXT',
+                'secondary_contact': 'TEXT',
+                'consent_share_with_police': 'INTEGER',
+                'consent_share_photo_with_police': 'INTEGER',
+                'data_retention': 'TEXT'
+            }
+            for col, typ in user_cols.items():
+                if col not in existing_cols:
+                    try:
+                        conn.execute(text(f"ALTER TABLE users ADD COLUMN {col} {typ};"))
+                        conn.commit()
+                    except Exception:
+                        pass
+            
+            # Migrate incident_reports for additional_details
+            res2 = conn.execute(text("PRAGMA table_info(incident_reports);"))
+            existing_cols_ir = {row[1] for row in res2}
+            if 'additional_details' not in existing_cols_ir:
+                try:
+                    conn.execute(text("ALTER TABLE incident_reports ADD COLUMN additional_details TEXT;"))
+                    conn.commit()
+                except Exception:
+                    pass
+            
+            # Migrate community_posts for username system
+            res3 = conn.execute(text("PRAGMA table_info(community_posts);"))
+            existing_cols_cp = {row[1] for row in res3}
+            community_cols = {
+                'user_id': 'INTEGER',
+                'username': 'VARCHAR(50)',
+                'is_anonymous': 'INTEGER DEFAULT 1'
+            }
+            for col, typ in community_cols.items():
+                if col not in existing_cols_cp:
+                    try:
+                        conn.execute(text(f"ALTER TABLE community_posts ADD COLUMN {col} {typ};"))
+                        conn.commit()
+                    except Exception:
+                        pass
+            
+            # Migrate comments for username system
+            res4 = conn.execute(text("PRAGMA table_info(comments);"))
+            existing_cols_c = {row[1]: row[2] for row in res4}
+            
+            comment_cols = {
+                'username': 'VARCHAR(50)',
+                'is_anonymous': 'INTEGER DEFAULT 1'
+            }
+            for col, typ in comment_cols.items():
+                if col not in existing_cols_c:
+                    try:
+                        conn.execute(text(f"ALTER TABLE comments ADD COLUMN {col} {typ};"))
+                        conn.commit()
+                    except Exception:
+                        pass
+            
+            # Add user_id if it doesn't exist at all
+            if 'user_id' not in existing_cols_c:
+                try:
+                    conn.execute(text("ALTER TABLE comments ADD COLUMN user_id INTEGER;"))
+                    conn.commit()
+                except Exception:
+                    pass
+    except Exception as e:
+        print(f"Migration warning: {e}")
+        pass
 
-from app import create_app
+# Register blueprints
+from app import routes
+app.register_blueprint(routes.bp)
 
-app = create_app()
+# Context processor to add today's date
+@app.context_processor
+def inject_today():
+    return {'today': datetime.now().strftime('%Y-%m-%d')}
 
-if __name__ == '__main__':
-    print("\n" + "="*60)
-    print("🚀 Women's Safety App - FULL APPLICATION")
-    print("="*60 + "\n")
-    # Run dev server
-    app.run(debug=True, host='0.0.0.0', port=5000)
-"""
-LEGACY MONOLITHIC IMPLEMENTATION BELOW - DISABLED AFTER MIGRATION TO APP FACTORY
-Keeping for reference only. Do not execute.
-"""
+print("\n=== Initializing Safe Routes Backend ===")
+
+try:
+    print("Loading safety data...")
+    import os
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    crime_data = pd.read_csv(os.path.join(base_dir, 'app', 'data', 'bangalore_crimes.csv'))
+    lighting_data = pd.read_csv(os.path.join(base_dir, 'app', 'data', 'bangalore_lighting.csv'))
+    population_data = pd.read_csv(os.path.join(base_dir, 'app', 'data', 'bangalore_population.csv'))
+    print(f"✅ Loaded {len(crime_data)} crime records")
+    print(f"✅ Loaded {len(lighting_data)} lighting points")
+    print(f"✅ Loaded {len(population_data)} population points")
+except Exception as e:
+    print(f"❌ Error loading data: {e}")
+    raise
+
+def validate_coordinates(lat, lon):
+    BANGALORE_BOUNDS = {
+        'min_lat': 12.704192, 'max_lat': 13.173706,
+        'min_lon': 77.269876, 'max_lon': 77.850066
+    }
+    try:
+        lat, lon = float(lat), float(lon)
+        return (BANGALORE_BOUNDS['min_lat'] <= lat <= BANGALORE_BOUNDS['max_lat'] and
+                BANGALORE_BOUNDS['min_lon'] <= lon <= BANGALORE_BOUNDS['max_lon'])
+    except:
+        return False
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    try:
+        lat1, lon1, lat2, lon2 = map(radians, [float(lat1), float(lon1), float(lat2), float(lon2)])
+        dlat = lat2 - lat1
+        dlon = lon2 - lon1
+        a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+        c = 2 * asin(sqrt(a))
+        return c * 6371
+    except Exception as e:
+        print(f"❌ Error calculating distance: {e}")
+        return float('inf')
+
+def calculate_route_hash(route):
+    if not route or len(route) < 2:
+        return None
+    sample_indices = [0, len(route)//4, len(route)//2, 3*len(route)//4, len(route)-1]
+    sample_points = [route[i] for i in sample_indices if i < len(route)]
+    hash_string = ''.join([f"{lat:.4f},{lon:.4f}" for lat, lon in sample_points])
+    return hashlib.md5(hash_string.encode()).hexdigest()
+
+def calculate_crime_exposure(lat, lon, radius=0.003):
+    try:
+        nearby_crimes = crime_data[
+            (abs(crime_data['Latitude'] - lat) < radius) &
+            (abs(crime_data['Longitude'] - lon) < radius)
+        ]
+        return len(nearby_crimes)
+    except Exception as e:
+        print(f"❌ Error calculating crime: {e}")
+        return 0
+
+def calculate_lighting_score(lat, lon, radius=0.005):
+    try:
+        nearby_lighting = lighting_data[
+            (abs(lighting_data['Latitude'] - lat) < radius) &
+            (abs(lighting_data['Longitude'] - lon) < radius)
+        ]
+        return nearby_lighting['lighting_score'].mean() if len(nearby_lighting) > 0 else 5.0
+    except:
+        return 5.0
+
+def calculate_population_score(lat, lon, radius=0.005):
+    try:
+        nearby_pop = population_data[
+            (abs(population_data['Latitude'] - lat) < radius) &
             (abs(population_data['Longitude'] - lon) < radius)
         ]
         if len(nearby_pop) > 0:
@@ -616,6 +764,17 @@ def rate_route():
 # Note: Main routes (/, /login, /signup, /safe-routes, etc.) are handled by the blueprint
 
 if __name__ == '__main__':
+    # CLI flags for easier HTTPS startup in PowerShell (avoids env var hassles)
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--https', action='store_true', help='Start server with HTTPS using cert.pem/key.pem')
+    parser.add_argument('--https-port', type=int, default=int(os.getenv('HTTPS_PORT', '5443')), help='HTTPS port')
+    try:
+        args, _ = parser.parse_known_args()
+    except SystemExit:
+        class _Args: pass
+        args = _Args()
+        args.https = False
+        args.https_port = int(os.getenv('HTTPS_PORT', '5443'))
     print("\n" + "="*60)
     print("🚀 Women's Safety App - FULL APPLICATION")
     print("="*60)
@@ -631,5 +790,25 @@ if __name__ == '__main__':
     print("✅ Emergency Contacts")
     print("✅ Fake Call Feature")
     print("="*60 + "\n")
-    app.run(debug=True, host='0.0.0.0', port=5000)
-"""
+    # HTTPS support via env (USE_HTTPS=1) or CLI flag (--https)
+    use_https = args.https or (str(os.getenv('USE_HTTPS', '0')).lower() in ('1', 'true', 'yes'))
+    cert_path = os.path.join(basedir, 'cert.pem')
+    key_path = os.path.join(basedir, 'key.pem')
+
+    if use_https and os.path.exists(cert_path) and os.path.exists(key_path):
+        https_port = int(args.https_port)
+        print("🔐 Starting HTTPS server")
+        print(f"   Certificate: {cert_path}")
+        print(f"   Key        : {key_path}")
+        print(f"   URL        : https://127.0.0.1:{https_port}")
+        try:
+            import socket
+            ip = socket.gethostbyname(socket.gethostname())
+            print(f"   LAN URL    : https://{ip}:{https_port}")
+        except Exception:
+            pass
+        app.run(debug=True, host='0.0.0.0', port=https_port, ssl_context=(cert_path, key_path))
+    else:
+        if use_https:
+            print("⚠️ USE_HTTPS is set, but cert.pem/key.pem were not found. Falling back to HTTP on :5000")
+        app.run(debug=True, host='0.0.0.0', port=5000)
