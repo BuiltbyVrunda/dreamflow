@@ -311,12 +311,13 @@ Notes:
 
 - National Helpline: 123-456
 - Local Support Center: 987-654
-- Emergency Services: 911
+- Emergency Services: 112
 
 ---
 
 **Built with:** Flask, Bootstrap, Leaflet, Gemini AI
 **License:** MIT
 **Last Updated:** November 2, 2025
+
 
 
