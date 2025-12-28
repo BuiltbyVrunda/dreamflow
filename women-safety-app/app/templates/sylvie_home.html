@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sylvie - Women's Safety</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sylvie-neumorphic.css') }}">
+</head>
+<body>
+    <!-- Floating animated elements -->
+    <div class="floating-element" style="top: 12%; left: 10%; font-size: 2.5rem; animation: float1 12s infinite ease-in-out;">💕</div>
+    <div class="floating-element" style="top: 25%; right: 15%; font-size: 2rem; animation: float2 15s infinite ease-in-out;">❤️</div>
+    <div class="floating-element" style="top: 45%; left: 20%; font-size: 2.2rem; animation: float3 18s infinite ease-in-out;">🌸</div>
+    <div class="floating-element" style="top: 60%; right: 25%; font-size: 2.3rem; animation: float4 14s infinite ease-in-out;">💖</div>
+    <div class="floating-element" style="top: 75%; left: 30%; font-size: 1.9rem; animation: float5 16s infinite ease-in-out;">💐</div>
+    <div class="floating-element" style="top: 35%; right: 8%; font-size: 2.1rem; animation: float2 13s infinite ease-in-out;">🌺</div>
+    <div class="floating-element" style="top: 50%; left: 12%; font-size: 2.4rem; animation: float3 17s infinite ease-in-out;">💗</div>
+    <div class="floating-element" style="top: 18%; right: 22%; font-size: 2rem; animation: float4 19s infinite ease-in-out;">💝</div>
+    <div class="floating-element" style="top: 70%; right: 18%; font-size: 1.8rem; animation: float1 14s infinite ease-in-out;">🌹</div>
+    <div class="floating-element" style="top: 85%; left: 40%; font-size: 2.2rem; animation: float5 15s infinite ease-in-out;">💗</div>
+    <div class="floating-element" style="top: 8%; left: 25%; font-size: 2rem; animation: float1 16s infinite ease-in-out;">💓</div>
+    <div class="floating-element" style="top: 40%; right: 12%; font-size: 2.3rem; animation: float3 14s infinite ease-in-out;">❤️</div>
+    <div class="floating-element" style="top: 55%; left: 5%; font-size: 2.1rem; animation: float2 18s infinite ease-in-out;">💕</div>
+    <div class="floating-element" style="top: 28%; left: 35%; font-size: 1.9rem; animation: float4 13s infinite ease-in-out;">💖</div>
+    <div class="floating-element" style="top: 65%; right: 10%; font-size: 2.2rem; animation: float5 17s infinite ease-in-out;">💝</div>
+    <div class="floating-element" style="top: 15%; right: 30%; font-size: 2rem; animation: float1 15s infinite ease-in-out;">💗</div>
+    <div class="floating-element" style="top: 80%; left: 15%; font-size: 2.4rem; animation: float3 19s infinite ease-in-out;">❤️</div>
+    <div class="floating-element" style="top: 32%; left: 45%; font-size: 2.1rem; animation: float2 12s infinite ease-in-out;">💓</div>
+    <div class="floating-element" style="top: 48%; right: 35%; font-size: 1.8rem; animation: float4 16s infinite ease-in-out;">💕</div>
+    <div class="floating-element" style="top: 90%; right: 28%; font-size: 2rem; animation: float5 14s infinite ease-in-out;">💖</div>
+
+    <div class="sylvie-container">
+        <!-- Top Bar -->
+        <div class="sylvie-topbar">
+            <a href="{{ url_for('main.index') }}" class="home-link">
+                <i class="fas fa-chevron-left"></i>
+                <span>Home</span>
+            </a>
+            <div class="profile-icon">
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+
+        <!-- Logo Section -->
+        <div class="sylvie-logo-section">
+            <img src="{{ url_for('static', filename='images/sylvie-logo.png') }}" alt="Sylvie Logo" style="width: 100%; max-width: 400px; margin: 0 auto; display: block;">
+        </div>
+
+        <!-- Videos Section -->
+        <div class="sylvie-section">
+            <div class="section-header">
+                <h2 class="section-title">Videos</h2>
+                <div class="nav-arrows">
+                    <i class="fas fa-chevron-left"></i>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="video-carousel">
+                <div class="video-card"></div>
+                <div class="video-card"></div>
+                <div class="video-card"></div>
+                <div class="video-card"></div>
+                <div class="video-card"></div>
+            </div>
+            
+            <div class="carousel-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+
+        <!-- Support Section -->
+        <div class="sylvie-section">
+            <div class="section-header">
+                <h2 class="section-title">How we support you</h2>
+                <div class="nav-arrows">
+                    <i class="fas fa-chevron-left"></i>
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="support-grid">
+                <a href="#" class="support-card">
+                    <div class="support-icon safety">
+                        <i class="fas fa-shield-heart"></i>
+                    </div>
+                    <span class="support-label">Safety Tips</span>
+                </a>
+                
+                <a href="{{ url_for('main.emergency_contacts') }}" class="support-card">
+                    <div class="support-icon emergency">
+                        <i class="fas fa-phone-volume"></i>
+                    </div>
+                    <span class="support-label">Emergency Contacts</span>
+                </a>
+                
+                <a href="{{ url_for('main.safe_routes') }}" class="support-card">
+                    <div class="support-icon maps">
+                        <i class="fas fa-map-location-dot"></i>
+                    </div>
+                    <span class="support-label">Safe Maps</span>
+                </a>
+                
+                <a href="{{ url_for('main.fake_call') }}" class="support-card">
+                    <div class="support-icon call">
+                        <i class="fas fa-phone-slash"></i>
+                    </div>
+                    <span class="support-label">Fake Call</span>
+                </a>
+                
+                <a href="#" class="support-card">
+                    <div class="support-icon sos">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="support-label">SOS Tips</span>
+                </a>
+                
+                <a href="{{ url_for('main.community_support') }}" class="support-card">
+                    <div class="support-icon community">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span class="support-label">Community Support</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="sylvie-bottom-nav">
+            <div class="nav-container">
+                <a href="{{ url_for('main.index') }}" class="nav-item">
+                    <div class="nav-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <span>Home</span>
+                </a>
+                
+                <a href="{{ url_for('main.safe_routes') }}" class="nav-item">
+                    <div class="nav-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <span>Maps</span>
+                </a>
+                
+                <div class="sos-button">
+                    <a href="{{ url_for('main.sos_center') }}" class="sos-circle">
+                        SOS
+                    </a>
+                    <span class="sos-label">long press to activate</span>
+                </div>
+                
+                <a href="{{ url_for('main.report_incident') }}" class="nav-item">
+                    <div class="nav-icon">
+                        <i class="fas fa-flag"></i>
+                    </div>
+                    <span>Reports</span>
+                </a>
+                
+                <a href="{{ url_for('main.community_support') }}" class="nav-item">
+                    <div class="nav-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span>Community</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Video carousel scroll
+        const carousel = document.querySelector('.video-carousel');
+        const dots = document.querySelectorAll('.carousel-dots .dot');
+        
+        carousel.addEventListener('scroll', () => {
+            const scrollPercentage = carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
+            const activeIndex = Math.round(scrollPercentage * (dots.length - 1));
+            
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        });
+        
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                const scrollAmount = (carousel.scrollWidth - carousel.clientWidth) / (dots.length - 1) * index;
+                carousel.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+            });
+        });
+        
+        // SOS long press
+        const sosButton = document.querySelector('.sos-circle');
+        let pressTimer;
+        
+        sosButton.addEventListener('mousedown', () => {
+            pressTimer = setTimeout(() => {
+                window.location.href = "{{ url_for('main.sos_center') }}";
+            }, 1000);
+        });
+        
+        sosButton.addEventListener('mouseup', () => {
+            clearTimeout(pressTimer);
+        });
+        
+        sosButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            pressTimer = setTimeout(() => {
+                window.location.href = "{{ url_for('main.sos_center') }}";
+            }, 1000);
+        });
+        
+        sosButton.addEventListener('touchend', () => {
+            clearTimeout(pressTimer);
+        });
+    </script>
+</body>
+</html>

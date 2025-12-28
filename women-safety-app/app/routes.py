@@ -916,8 +916,18 @@ def api_sos_deactivate():
 
 @bp.route('/')
 def index():
-    """Main landing page with intro animation"""
+    """Sylvie landing page - main home"""
+    return render_template('sylvie_home.html')
+
+@bp.route('/old-landing')
+def old_landing():
+    """Old landing page (deprecated)"""
     return render_template('landing.html')
+
+@bp.route('/sylvie')
+def sylvie_home():
+    """Sylvie neumorphic home page (same as index)"""
+    return render_template('sylvie_home.html')
 
 @bp.route('/report')
 def report_incident():

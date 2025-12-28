@@ -9,6 +9,11 @@
         --danger: #dc3545;
     }
     
+    body {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%) !important;
+        background-attachment: fixed !important;
+    }
+    
     .fake-call-container {
         max-width: 600px;
         margin: 2rem auto;
@@ -16,23 +21,25 @@
     }
     
     .fake-call-card{
-        background: rgba(255,255,255,0.98);
+        background: rgba(30, 30, 46, 0.95);
         border-radius: 16px;
         padding: 32px;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .fake-call-card h1 {
         font-size: 28px;
         margin-bottom: 12px;
-        color: #2D3748;
-        font-weight: 700;
+        color: #ffffff;
+        font-weight: 800;
     }
     
     .fake-call-card .lead {
-        color: #4A5568;
+        color: #cbd5e1;
         margin-bottom: 24px;
         font-size: 16px;
+        font-weight: 500;
     }
 
     .controls {
@@ -48,14 +55,22 @@
         min-width: 180px;
         padding: 12px 16px;
         border-radius: 8px;
-        border: 2px solid #E2E8F0;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
         outline: none;
         font-size: 15px;
-        transition: border-color 0.2s;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .controls input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
     }
     
     .controls input:focus {
         border-color: #8B5CF6;
+        background: rgba(255, 255, 255, 0.15);
     }
     
     .controls input[type="number"] {
@@ -116,20 +131,22 @@
 
     .hint {
         font-size: 14px;
-        color: #4A5568;
+        color: #cbd5e1;
         margin-top: 16px;
         padding: 16px;
-        background: linear-gradient(135deg, #F7FAFC 0%, #EDF2F7 100%);
+        background: rgba(139, 92, 246, 0.15);
         border-radius: 12px;
         border-left: 4px solid #8B5CF6;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         line-height: 1.6;
+        font-weight: 500;
     }
     
     .hint strong {
-        color: #2D3748;
+        color: #ffffff;
         display: block;
         margin-bottom: 4px;
+        font-weight: 800;
     }
 
     /* Call screen overlay */
@@ -253,13 +270,35 @@
         box-shadow: 0 12px 32px rgba(220, 53, 69, 0.6);
     }
 
-    .countdown-text {
-        font-size: 15px;
-        color: #64748B;
+    .countdown-tcbd5e1;
         margin-top: 20px;
-        font-weight: 600;
-        background: #F1F5F9;
+        font-weight: 700;
+        background: rgba(139, 92, 246, 0.2);
         padding: 12px 20px;
+        border-radius: 12px;
+        display: inline-block;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+    
+    /* Bottom navbar styling override */
+    .navbar.fixed-bottom {
+        background: rgba(26, 26, 46, 0.95) !important;
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-bottom: none !important;
+    }
+    
+    .navbar .nav-link {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-weight: 600;
+    }
+    
+    .navbar .nav-link:hover {
+        color: #ffffff !important;
+    }
+    
+    .navbar .nav-link.active {
+        color: #8B5CF6 !important
         border-radius: 12px;
         display: inline-block;
     }
