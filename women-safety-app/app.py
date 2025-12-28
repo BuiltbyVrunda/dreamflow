@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime
 import requests
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 import geocoder
 from math import radians, cos, sin, asin, sqrt, atan2
@@ -39,6 +40,17 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 from app.models import db
 from app.auth_models import User
 db.init_app(app)
+
+# Import ML and safety features
+from app.safety.guardrails import apply_safety_guardrails
+from app.ml.feature_extraction import extract_route_features
+from app.ml.collect_data import log_route_sample
+
+try:
+    from app.ml.inference import predict_safety_score as ml_predict
+    ML_AVAILABLE = True
+except Exception:
+    ML_AVAILABLE = False
 
 # Create tables and run migrations
 with app.app_context():
@@ -220,6 +232,149 @@ def calculate_population_score(lat, lon, radius=0.005):
     except:
         return 5.0, 5.0, False
 
+def validate_route_connectivity(route_points, max_gap_km=0.5):
+    """
+    Validate that route points are properly connected without large gaps
+    Returns True if route is continuous, False if there are disconnected segments
+    """
+    if len(route_points) < 2:
+        return False
+    
+    for i in range(len(route_points) - 1):
+        current_point = route_points[i]
+        next_point = route_points[i + 1]
+        
+        gap_distance = haversine_distance(
+            current_point[0], current_point[1],
+            next_point[0], next_point[1]
+        )
+        
+        if gap_distance > max_gap_km:
+            return False
+    
+    return True
+
+def check_route_main_road_coverage(route_points, min_coverage=0.4):
+    """
+    Check if route has sufficient main road coverage
+    Returns (has_coverage, main_road_percentage)
+    """
+    if len(route_points) < 2:
+        return False, 0.0
+    
+    main_road_count = 0
+    sample_points = min(len(route_points), 20)
+    step = len(route_points) // sample_points
+    
+    for i in range(0, len(route_points), max(1, step)):
+        if i >= len(route_points):
+            break
+        lat, lon = route_points[i]
+        _, _, is_main = calculate_population_score(lat, lon, radius=0.003)
+        if is_main:
+            main_road_count += 1
+    
+    total_sampled = min(sample_points, len(route_points))
+    coverage = main_road_count / total_sampled if total_sampled > 0 else 0
+    
+    return coverage >= min_coverage, coverage * 100
+
+def detect_route_backtracking(route_points, start_lat, start_lon, end_lat, end_lon):
+    """
+    Detect if route has unnecessary back-tracking or detours
+    Returns True if route is efficient, False if it has detours
+    """
+    if len(route_points) < 5:
+        return True
+    
+    # Calculate direct distance from start to end
+    direct_distance = haversine_distance(start_lat, start_lon, end_lat, end_lon)
+    
+    if direct_distance < 0.1:  # Very short route
+        return True
+    
+    # Calculate actual route distance
+    actual_distance = 0
+    for i in range(len(route_points) - 1):
+        actual_distance += haversine_distance(
+            route_points[i][0], route_points[i][1],
+            route_points[i + 1][0], route_points[i + 1][1]
+        )
+    
+    # Stricter ratio: route should be max 1.3x direct distance
+    detour_ratio = actual_distance / direct_distance
+    if detour_ratio > 1.3:
+        return False
+    
+    # Check for back-tracking: measure progress toward destination
+    sample_size = min(20, len(route_points))
+    step = max(1, len(route_points) // sample_size)
+    
+    backtrack_count = 0
+    stagnant_count = 0
+    
+    for i in range(0, len(route_points) - step, step):
+        if i + step >= len(route_points):
+            break
+            
+        current_point = route_points[i]
+        next_point = route_points[i + step]
+        
+        # Distance from current point to destination
+        current_to_dest = haversine_distance(
+            current_point[0], current_point[1],
+            end_lat, end_lon
+        )
+        
+        # Distance from next point to destination  
+        next_to_dest = haversine_distance(
+            next_point[0], next_point[1],
+            end_lat, end_lon
+        )
+        
+        # Calculate progress (negative = moving away)
+        progress = current_to_dest - next_to_dest
+        
+        # If moving away from destination
+        if progress < 0:
+            backtrack_count += 1
+        # If barely making progress (stagnant)
+        elif progress < 0.01:
+            stagnant_count += 1
+    
+    total_segments = len(range(0, len(route_points) - step, step))
+    
+    # Reject if more than 20% of segments move away from destination
+    if backtrack_count > (total_segments * 0.2):
+        return False
+    
+    # Reject if more than 40% of segments are stagnant or backtracking
+    if (backtrack_count + stagnant_count) > (total_segments * 0.4):
+        return False
+    
+    # Additional check: measure maximum deviation from direct line
+    max_deviation = 0
+    for point in route_points[::max(1, len(route_points) // 10)]:
+        # Calculate perpendicular distance from point to direct line
+        # Using simplified cross-track distance
+        lat, lon = point
+        
+        # Distance from point to start
+        d_start = haversine_distance(start_lat, start_lon, lat, lon)
+        # Distance from point to end
+        d_end = haversine_distance(lat, lon, end_lat, end_lon)
+        
+        # If point is much further from both start and end than direct distance
+        # it's likely a detour
+        if d_start > direct_distance * 0.7 and d_end > direct_distance * 0.7:
+            max_deviation = max(max_deviation, min(d_start, d_end))
+    
+    # If maximum deviation is more than 30% of direct distance, reject
+    if max_deviation > direct_distance * 0.3:
+        return False
+    
+    return True
+
 def calculate_route_safety_comprehensive(route, preferences=None):
     if not route or len(route) < 2:
         return None
@@ -391,7 +546,11 @@ def calculate_composite_score(route, preferences):
     preference_bonus = 0
     if preferences.get('prefer_main_roads'):
         main_road_pct = route.get('main_road_percentage', 0)
-        preference_bonus += (main_road_pct / 100) * 0.15
+        # Strong bonus for main roads when preference is enabled
+        preference_bonus += (main_road_pct / 100) * 0.35
+        # Extra bonus for high main road coverage
+        if main_road_pct > 70:
+            preference_bonus += 0.15
     
     if preferences.get('prefer_well_lit'):
         lighting_score = route.get('lighting_score', 5)
@@ -455,16 +614,35 @@ def optimize_route():
         if direct_routes:
             print(f"OSRM returned {len(direct_routes)} direct alternatives")
             for idx, route_data in enumerate(direct_routes):
-                route_hash = calculate_route_hash(route_data['route'])
+                route_points = route_data['route']
+                
+                if not validate_route_connectivity(route_points, max_gap_km=0.5):
+                    print(f"❌ Direct route {idx+1}: Rejected - disconnected segments")
+                    continue
+                
+                if not detect_route_backtracking(route_points, start_lat, start_lon, end_lat, end_lon):
+                    print(f"❌ Direct route {idx+1}: Rejected - unnecessary detour/back-tracking")
+                    continue
+                
+                route_hash = calculate_route_hash(route_points)
                 if route_hash and route_hash not in route_hashes:
-                    safety = calculate_route_safety_comprehensive(route_data['route'], preferences)
+                    safety = calculate_route_safety_comprehensive(route_points, preferences)
                     if safety:
+                        has_main, main_pct = check_route_main_road_coverage(route_points)
+                        
+                        # Filter by main road preference if enabled
+                        if preferences.get('prefer_main_roads') and main_pct < 40:
+                            print(f"⏭️  Direct route {idx+1}: Skipped - {main_pct:.0f}% main roads (need 40%+)")
+                            continue
+                        
                         route_data.update(safety)
                         route_data['source'] = f'direct_{idx+1}'
                         route_data['type'] = 'direct'
                         all_routes.append(route_data)
                         route_hashes.add(route_hash)
-                        print(f"✅ Direct route {idx+1}: {route_data['distance_km']:.2f}km, safety={safety['safety_score']:.1f}, crime={safety['crime_density']:.1f}")
+                        
+                        main_status = f"main roads: {main_pct:.0f}%" if has_main else f"local roads: {main_pct:.0f}%"
+                        print(f"✅ Direct route {idx+1}: {route_data['distance_km']:.2f}km, safety={safety['safety_score']:.1f}, {main_status}")
         
         print("\n--- Phase 2: Strategic Waypoint Exploration ---")
         
@@ -522,11 +700,25 @@ def optimize_route():
                     
                     if waypoint_routes:
                         for route_data in waypoint_routes:
-                            route_hash = calculate_route_hash(route_data['route'])
+                            route_points = route_data['route']
+                            
+                            if not validate_route_connectivity(route_points, max_gap_km=0.5):
+                                continue
+                            
+                            if not detect_route_backtracking(route_points, start_lat, start_lon, end_lat, end_lon):
+                                continue
+                            
+                            route_hash = calculate_route_hash(route_points)
                             
                             if route_hash and route_hash not in route_hashes:
-                                safety = calculate_route_safety_comprehensive(route_data['route'], preferences)
+                                safety = calculate_route_safety_comprehensive(route_points, preferences)
                                 if safety:
+                                    # Filter by main road preference if enabled
+                                    if preferences.get('prefer_main_roads'):
+                                        main_road_pct = safety.get('main_road_percentage', 0)
+                                        if main_road_pct < 40:
+                                            continue  # Skip routes with less than 40% main roads
+                                    
                                     route_data.update(safety)
                                     route_data['source'] = f'waypoint_{waypoint_count}'
                                     route_data['type'] = 'waypoint'
@@ -546,12 +738,84 @@ def optimize_route():
         
         print("\n--- Phase 3: Preference-Based Scoring ---")
         
+        current_time = datetime.now()
+        ml_predictions_made = 0
+        
         for route in all_routes:
             route['composite_score'] = calculate_composite_score(route, preferences)
+            
+            if ML_AVAILABLE:
+                try:
+                    safety_metrics = {
+                        'crime_density': route.get('crime_density', 0),
+                        'max_crime_exposure': route.get('max_crime_exposure', 0),
+                        'lighting_score': route.get('lighting_score', 0),
+                        'population_score': route.get('population_score', 0),
+                        'traffic_score': route.get('traffic_score', 0),
+                        'crime_hotspot_percentage': route.get('crime_hotspot_percentage', 0)
+                    }
+                    
+                    features = extract_route_features(route, safety_metrics, current_time)
+                    ml_score = ml_predict(features)
+                    
+                    rule_based_score = route['safety_score']
+                    route['safety_score'] = 0.75 * rule_based_score + 0.25 * ml_score
+                    route['ml_score'] = ml_score
+                    route['rule_score'] = rule_based_score
+                    
+                    ml_predictions_made += 1
+                    print(f"  ✅ ML Model prediction - Rule: {rule_based_score:.2f}, ML: {ml_score:.2f}, Combined: {route['safety_score']:.2f}")
+                    
+                    log_route_sample(features, rule_based_score)
+                except Exception as e:
+                    print(f"  ⚠️ ML prediction failed: {e}")
+                    pass
+        
+        if ML_AVAILABLE:
+            print(f"\n🤖 ML Model Status: ACTIVE - Made {ml_predictions_made}/{len(all_routes)} predictions")
+        else:
+            print(f"\n⚠️ ML Model Status: DISABLED - Using rule-based scoring only")
         
         all_routes.sort(key=lambda x: x['composite_score'], reverse=True)
         
-        final_routes = all_routes[:7]
+        print("\n--- Phase 4: Safety Guardrails ---")
+        
+        validated_routes = []
+        
+        for idx, route in enumerate(all_routes):
+            # Apply safety guardrails
+            is_valid, adjusted_score, warnings = apply_safety_guardrails(
+                {'steps': route.get('route', []), 'duration': route.get('duration_min', 0) * 60},
+                route['safety_score'],
+                current_time,
+                crime_data,
+                lighting_data,
+                population_data
+            )
+            
+            if not is_valid:
+                print(f"❌ Route {idx+1} rejected by guardrails: {warnings}")
+                continue  # Skip this route
+            
+            # Update score with guardrail adjustments
+            route['safety_score'] = adjusted_score
+            route['guardrail_warnings'] = warnings
+            
+            if warnings:
+                print(f"⚠️  Route {idx+1} has warnings: {warnings}")
+            
+            validated_routes.append(route)
+            
+            # Stop if we have enough good routes
+            if len(validated_routes) >= 20:
+                break
+        
+        if len(validated_routes) == 0:
+            return jsonify({'success': False, 'error': 'No routes passed safety validation'}), 404
+        
+        print(f"Validated routes: {len(validated_routes)}")
+        
+        final_routes = validated_routes[:7]
         print(f"Final routes to display: {len(final_routes)}")
         
         for idx, route in enumerate(final_routes):
@@ -746,7 +1010,108 @@ def get_population_heatmap():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/user-feedback-heatmap', methods=['GET'])
+def get_user_feedback_heatmap():
+    """Return heatmap data from user_feedback.csv"""
+    try:
+        feedback_file = os.path.join(base_dir, 'app', 'data', 'user_feedback.csv')
+        if not os.path.exists(feedback_file):
+            return jsonify({
+                'success': True,
+                'data': [],
+                'total_reports': 0
+            })
+        
+        feedback_df = pd.read_csv(feedback_file)
+        
+        if len(feedback_df) == 0:
+            return jsonify({
+                'success': True,
+                'data': [],
+                'total_reports': 0
+            })
+        
+        # Format: [lat, lon, intensity]
+        points = feedback_df[['latitude', 'longitude']].copy()
+        points['intensity'] = 1.0  # Each report has equal weight
+        
+        heatmap_data = points.values.tolist()
+        
+        return jsonify({
+            'success': True,
+            'data': heatmap_data,
+            'total_reports': len(feedback_df)
+        })
+    except Exception as e:
+        print(f"Error loading user feedback heatmap: {e}")
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/ml-model-info', methods=['GET'])
+def get_ml_model_info():
+    """Return ML model status and information"""
+    try:
+        if not ML_AVAILABLE:
+            return jsonify({
+                'success': True,
+                'ml_enabled': False,
+                'message': 'ML model is not available. Using rule-based scoring only.'
+            })
+        
+        # Check if model file exists
+        model_path = Path(os.path.join(base_dir, 'app', 'ml', 'models', 'safety_model.pkl'))
+        
+        # Try to get model info safely
+        try:
+            from app.ml.inference import _model_data, _model
+            has_model_data = True
+        except:
+            has_model_data = False
+        
+        info = {
+            'success': True,
+            'ml_enabled': True,
+            'model_exists': model_path.exists(),
+            'model_path': str(model_path),
+            'model_size_kb': round(model_path.stat().st_size / 1024, 2) if model_path.exists() else 0,
+            'scoring_weight': '75% rule-based + 25% ML',
+        }
+        
+        if has_model_data:
+            info['feature_names'] = _model_data.get('feature_names', [])
+            info['num_features'] = len(_model_data.get('feature_names', []))
+            info['model_type'] = str(type(_model).__name__)
+            info['training_samples'] = _model_data.get('num_samples', 'Unknown')
+            info['model_accuracy'] = _model_data.get('accuracy', 'Unknown')
+        
+        # Check training data
+        training_data_path = Path(os.path.join(base_dir, 'app', 'ml', 'data', 'training_data.csv'))
+        if training_data_path.exists():
+            training_df = pd.read_csv(training_data_path)
+            info['training_data_samples'] = len(training_df)
+        else:
+            info['training_data_samples'] = 0
+        
+        # Check route logs
+        route_logs_path = Path(os.path.join(base_dir, 'app', 'ml', 'data', 'route_logs'))
+        if route_logs_path.exists():
+            log_files = list(route_logs_path.glob('*.csv'))
+            info['route_logs_count'] = len(log_files)
+        else:
+            info['route_logs_count'] = 0
+        
+        return jsonify(info)
+    except Exception as e:
+        print(f"Error in ml-model-info: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'ml_enabled': ML_AVAILABLE
+        }), 500
+
 @app.route('/api/health', methods=['GET'])
+
 def health_check():
     return jsonify({
         'success': True,
@@ -760,8 +1125,121 @@ def health_check():
 def rate_route():
     try:
         data = request.json or {}
+        rating = data.get('rating')
+        feedback_text = data.get('feedback', '')
+        route_id = data.get('route_id', '')
+        route_data = data.get('route_data', {})
+        
+        if rating is None:
+            return jsonify({'success': False, 'error': 'Rating required'}), 400
+        
+        feedback_entry = {
+            'timestamp': datetime.now().isoformat(),
+            'route_id': route_id,
+            'rating': rating,
+            'feedback': feedback_text,
+            'distance_km': route_data.get('distance_km', 0),
+            'duration_min': route_data.get('duration_min', 0),
+            'safety_score': route_data.get('safety_score', 0),
+            'crime_density': route_data.get('crime_density', 0),
+            'lighting_score': route_data.get('lighting_score', 0)
+        }
+        
+        feedback_file = Path(os.path.join(base_dir, 'logs', 'feedback.csv'))
+        feedback_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        df_feedback = pd.DataFrame([feedback_entry])
+        
+        if feedback_file.exists():
+            df_feedback.to_csv(feedback_file, mode='a', header=False, index=False)
+        else:
+            df_feedback.to_csv(feedback_file, mode='w', header=True, index=False)
+        
+        if rating >= 4 and route_data:
+            try:
+                safety_metrics = {
+                    'crime_density': route_data.get('crime_density', 0),
+                    'max_crime_exposure': route_data.get('max_crime_exposure', 0),
+                    'lighting_score': route_data.get('lighting_score', 0),
+                    'population_score': route_data.get('population_score', 0),
+                    'traffic_score': route_data.get('traffic_score', 0),
+                    'crime_hotspot_percentage': route_data.get('crime_hotspot_percentage', 0)
+                }
+                
+                features = extract_route_features(route_data, safety_metrics, datetime.now())
+                label = route_data.get('safety_score', 0) * (rating / 5.0)
+                log_route_sample(features, label)
+            except Exception:
+                pass
+        
         return jsonify({'success': True, 'message': 'Rating recorded'})
     except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@app.route('/api/submit-unsafe-segments', methods=['POST'])
+def submit_unsafe_segments():
+    try:
+        data = request.json
+        route_id = data.get('route_id')
+        rating = data.get('rating')
+        unsafe_segments = data.get('unsafe_segments', [])
+        route_data = data.get('route_data', {})
+        
+        print(f"\n📝 Received unsafe segment feedback:")
+        print(f"  Route ID: {route_id}")
+        print(f"  Rating: {rating} stars")
+        print(f"  Unsafe segments: {len(unsafe_segments)}")
+        
+        # Save to CSV
+        import csv
+        import uuid
+        
+        user_session = str(uuid.uuid4())[:8]
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        feedback_file = os.path.join(base_dir, 'app', 'data', 'user_feedback.csv')
+        
+        # Create file with headers if it doesn't exist
+        if not os.path.exists(feedback_file):
+            with open(feedback_file, 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(['timestamp', 'latitude', 'longitude', 'route_id', 'rating', 'feedback_type', 'session_id'])
+        
+        with open(feedback_file, 'a', newline='') as csvfile:
+            writer = csv.writer(csvfile)
+            for segment in unsafe_segments:
+                writer.writerow([
+                    timestamp,
+                    segment['lat'],
+                    segment['lon'],
+                    route_id,
+                    rating,
+                    'unsafe_segment',
+                    user_session
+                ])
+        
+        print(f"  ✅ Saved {len(unsafe_segments)} feedback points to user_feedback.csv")
+        
+        # Check if we should retrain the model
+        feedback_count = sum(1 for line in open(feedback_file)) - 1  # excluding header
+        print(f"  Total feedback entries: {feedback_count}")
+        
+        if feedback_count >= 50 and feedback_count % 50 == 0:
+            print(f"  🤖 Triggering ML model retraining...")
+            try:
+                import subprocess
+                subprocess.Popen(['python', os.path.join(base_dir, 'app', 'ml', 'train.py')], cwd=base_dir)
+                print(f"  ✅ Model retraining started in background")
+            except Exception as e:
+                print(f"  ⚠️ Could not start retraining: {e}")
+        
+        return jsonify({
+            'success': True,
+            'message': f'Recorded {len(unsafe_segments)} unsafe segments',
+            'feedback_count': feedback_count
+        })
+    except Exception as e:
+        print(f"❌ Error saving feedback: {e}")
         return jsonify({'success': False, 'error': str(e)}), 500
 
 # Note: Main routes (/, /login, /signup, /safe-routes, etc.) are handled by the blueprint

@@ -88,53 +88,6 @@
             height: 100vh;
             position: relative;
         }
-        /* Top navigation bar */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 3000;
-            border-bottom: 1px solid var(--border-color);
-        }
-        [data-theme="dark"] .top-nav {
-            background: rgba(30, 41, 59, 0.85);
-        }
-        .top-nav .nav-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-        }
-        .top-nav .brand {
-            font-weight: 700;
-            font-size: 16px;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-        .top-nav .nav-links a {
-            color: var(--text-primary);
-            text-decoration: none;
-            margin-left: 16px;
-            font-weight: 500;
-            padding: 8px 10px;
-            border-radius: 8px;
-        }
-        .top-nav .nav-links a:hover {
-            background: var(--card-bg);
-        }
-        /* Offset content below fixed nav */
-        .container {
-            height: calc(100vh - 56px);
-            margin-top: 56px;
-        }
         
         .sidebar {
             width: 380px;
@@ -469,6 +422,9 @@
             border-radius: 10px;
             transition: all 0.3s ease;
             border: 1px solid var(--border-color);
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(102, 126, 234, 0.2);
+            touch-action: manipulation;
         }
         
         .checkbox-group:hover {
@@ -476,10 +432,29 @@
             border-color: var(--primary);
         }
         
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            min-height: 44px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        
         .checkbox-label {
             display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1;
         }
         
         .preference-icon {
@@ -745,6 +720,9 @@
         #map {
             width: 100%;
             height: 100%;
+            background: #e5e7eb;
+            position: relative;
+            touch-action: pan-x pan-y;
         }
         
         .instructions {
@@ -1138,21 +1116,376 @@
         .car-marker div {
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
         }
+        
+        /* Mobile Optimization for Touch Targets */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+            
+            .subtitle {
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+            
+            .instructions {
+                font-size: 12px;
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .search-input {
+                font-size: 16px !important;
+                padding: 14px 16px 14px 44px;
+            }
+            
+            .search-icon {
+                font-size: 18px;
+            }
+            
+            .checkbox-group {
+                padding: 14px;
+                margin-bottom: 10px;
+            }
+            
+            .checkbox-group label {
+                min-height: 48px;
+                font-size: 15px;
+            }
+            
+            .checkbox-group input[type="checkbox"] {
+                width: 24px;
+                height: 24px;
+                margin-right: 12px;
+            }
+            
+            .preference-icon {
+                font-size: 18px;
+            }
+            
+            .btn {
+                min-height: 48px;
+                font-size: 15px;
+                padding: 12px 18px;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-width: 100%;
+                height: 100vh;
+                overflow-y: auto;
+                position: fixed;
+                left: 0;
+                top: 0;
+                z-index: 10;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            #map {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                right: 0;
+                top: 0;
+            }
+            
+            .container {
+                flex-direction: column;
+            }
+            
+            .map-container {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 1;
+            }
+            
+            .preferences-section strong {
+                font-size: 15px;
+            }
+            
+            .heatmap-legend {
+                font-size: 11px;
+                padding: 10px;
+            }
+            
+            .legend-title {
+                font-size: 13px;
+            }
+            
+            /* Add toggle button for sidebar on mobile */
+            .mobile-map-toggle {
+                display: block !important;
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border: none;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                font-size: 24px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                cursor: pointer;
+            }
+        }
+        
+        .mobile-map-toggle {
+            display: none;
+        }
+        
+        .sidebar.hide-mobile {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-map-toggle {
+                display: none !important;
+            }
+        }
+        
+        /* Unsafe Segment Selection Overlay */
+        .segment-selection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+        }
+        
+        .segment-selection-overlay.active {
+            display: flex;
+        }
+        
+        .segment-header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .segment-instructions {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .segment-map-container {
+            flex: 1;
+            position: relative;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+        
+        .segment-map-container #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .segment-controls {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .segment-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 120px;
+        }
+        
+        .segment-btn-done {
+            background: #10b981;
+            color: white;
+        }
+        
+        .segment-btn-cancel {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .unsafe-marker {
+            width: 20px;
+            height: 20px;
+            background: #ef4444;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        
+        /* Full-Screen Navigation Mode */
+        .navigation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+            z-index: 2000;
+            display: none;
+        }
+        
+        .navigation-overlay.active {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .nav-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .nav-instruction-panel {
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .nav-instruction-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        
+        .nav-instruction-text {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .nav-distance-text {
+            font-size: 18px;
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .nav-next-step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin-top: 12px;
+            border-radius: 8px;
+        }
+        
+        .nav-map-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .nav-exit-btn {
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        .nav-rate-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 1001;
+            display: none;
+        }
+        
+        .nav-rate-btn.active {
+            display: block;
+        }
+        
+        .nav-distance-header {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 4px;
+        }
+        
+        .nav-distance-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .nav-next-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        
+        .nav-next-text {
+            font-size: 14px;
+        }
     </style>
 </head>
 <body data-theme="light">
-    <!-- Global Navigation Bar -->
-    <nav class="top-nav">
-        <div class="nav-inner">
-            <a href="#" class="brand" id="navBrand">Women Safety</a>
-            <div class="nav-links">
-                <a href="/" id="linkMainSite">Home</a>
-                <a href="#" id="linkSafeRoutes">Safe Route Finder</a>
+    <!-- Navigation Overlay -->
+    <div id="navigationOverlay" class="navigation-overlay">
+        <div class="nav-header">
+            <div>
+                <div class="nav-distance-header">Distance to destination</div>
+                <div class="nav-distance-value" id="navTotalDistance">--</div>
+            </div>
+            <button class="nav-exit-btn" onclick="exitNavigationMode()">Exit</button>
+        </div>
+        
+        <div class="nav-instruction-panel">
+            <div class="nav-instruction-icon" id="navIcon">🧭</div>
+            <div class="nav-instruction-text" id="navInstruction">Starting navigation...</div>
+            <div class="nav-distance-text" id="navDistance">Calculating...</div>
+            <div class="nav-next-step">
+                <div class="nav-next-label">Then</div>
+                <div class="nav-next-text" id="navNextStep">Loading next step...</div>
             </div>
         </div>
-    </nav>
+        
+        <div class="nav-map-container" id="navMapContainer">
+            <!-- Map will be moved here during navigation -->
+        </div>
+        
+        <!-- Navigation Rate Button -->
+        <button class="nav-rate-btn" id="navRateBtn" onclick="openRatingFromNavigation()">
+            ⭐ Rate Route
+        </button>
+    </div>
+    
     <div class="container">
-        <div class="sidebar">
+        <div class="sidebar" id="mainSidebar">
             <h1>🛡️ Safe Route Planner</h1>
             <p class="subtitle">Find the safest routes in Bangalore</p>
             
@@ -1266,6 +1599,12 @@
                         Show Population Density
                     </label>
                 </div>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="showUserFeedbackHeatmap" onchange="toggleUserFeedbackHeatmap()">
+                        Show User Reports (Unsafe Areas)
+                    </label>
+                </div>
             </div>
             
             <div class="heatmap-legend">
@@ -1338,8 +1677,32 @@
             </div>
         </div>
         
-        <div class="map-container">
+        <div class="map-container" id="mapContainer">
             <div id="map"></div>
+        </div>
+    </div>
+    
+    <!-- Mobile Map Toggle Button -->
+    <button class="mobile-map-toggle" onclick="toggleSidebarMobile()">🗺️</button>
+    
+    <!-- Unsafe Segment Selection Overlay -->
+    <div id="segmentSelectionOverlay" class="segment-selection-overlay">
+        <div class="segment-header">
+            <h2 style="margin: 0 0 10px 0; font-size: 22px;">⚠️ Mark Unsafe Areas</h2>
+            <p style="margin: 0; font-size: 14px; opacity: 0.9;">Help us improve safety by marking areas where you felt unsafe</p>
+        </div>
+        
+        <div class="segment-instructions">
+            <strong>👆 Touch and drag along the route</strong> where you felt unsafe. Drag to mark multiple segments.
+        </div>
+        
+        <div class="segment-map-container" id="segmentMapContainer">
+            <!-- Map will be moved here -->
+        </div>
+        
+        <div class="segment-controls">
+            <button class="segment-btn segment-btn-cancel" onclick="cancelSegmentSelection()">Cancel</button>
+            <button class="segment-btn segment-btn-done" onclick="submitUnsafeSegments()">Done (<span id="unsafeCount">0</span>)</button>
         </div>
     </div>
     
@@ -1387,28 +1750,36 @@
     <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <script src="{{ url_for('static', filename='js/route_display.js') }}"></script>
     <script>
-        const BACKEND_URL = window.location.origin;
-        // Configure top navbar links
-        (function() {
-            try {
-                const SAFE_ROUTES_URL = `${BACKEND_URL}/safe-routes-full`;
-                const MAIN_SITE_URL = `${location.protocol}//${location.hostname}:3000/new_feature_index.html`;
-                const safeLink = document.getElementById('linkSafeRoutes');
-                const homeLink = document.getElementById('linkMainSite');
-                const brand = document.getElementById('navBrand');
-                if (safeLink) safeLink.href = SAFE_ROUTES_URL;
-                if (homeLink) homeLink.href = MAIN_SITE_URL;
-                if (brand) brand.href = MAIN_SITE_URL;
-            } catch (e) { console.warn('Navbar setup issue', e); }
-        })();
+        console.log('=== Safe Routes - Script Starting ===');
+        console.log('Leaflet loaded:', typeof L !== 'undefined');
+        
+        // Auto-detect backend URL - use same port and protocol as current page
+        const BACKEND_URL = `${window.location.protocol}//${window.location.host}`;
+        
+        console.log('Backend URL:', BACKEND_URL);
+        console.log('Map container exists:', document.getElementById('map') !== null);
         
         // Initialize map with light theme
-        const map = L.map('map').setView([12.9716, 77.5946], 12);
+        console.log('Initializing map...');
+        const map = L.map('map', {
+            tap: true,
+            tapTolerance: 30,
+            touchZoom: true,
+            dragging: true
+        }).setView([12.9716, 77.5946], 12);
+        
+        console.log('✅ Map initialized');
+        
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '© OpenStreetMap contributors, © CARTO',
             maxZoom: 19,
-            subdomains: 'abcd'
+            subdomains: 'abcd',
+            crossOrigin: true
         }).addTo(map);
+        
+        // Force map to resize after load
+        setTimeout(() => map.invalidateSize(), 100);
+        console.log('Map initialized');
         
         // Lightweight autocomplete using our backend (Nominatim)
         function debounce(fn, wait) {
@@ -1425,17 +1796,35 @@
                 return;
             }
 
+            console.log(`🔍 Searching for "${query}" (type: ${type})`);
+
             try {
-                const res = await fetch(`${BACKEND_URL}/api/search-place?q=${encodeURIComponent(query)}`);
+                const url = `${BACKEND_URL}/api/search-place?q=${encodeURIComponent(query)}`;
+                console.log('Search URL:', url);
+                
+                const res = await fetch(url);
+                
+                console.log('Search response status:', res.status);
+                
+                if (!res.ok) {
+                    console.error('Search failed:', res.status, res.statusText);
+                    throw new Error(`HTTP ${res.status}`);
+                }
+                
                 const data = await res.json();
+                console.log('Search results:', data);
+                
                 const container = document.getElementById(type + 'SearchResults');
                 container.innerHTML = '';
 
                 if (!data.success || !data.results || data.results.length === 0) {
+                    console.log('No results found');
                     container.style.display = 'none';
                     return;
                 }
 
+                console.log(`✅ Found ${data.results.length} results`);
+                
                 data.results.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'search-result-item';
@@ -1445,16 +1834,37 @@
                 });
                 container.style.display = 'block';
             } catch (err) {
-                console.error('Search error', err);
+                console.error('❌ Search error:', err);
+                console.error('Error details:', err.message);
             }
         }
 
         const debouncedStartSearch = debounce((e) => performSearch(e.target.value, 'start'), 250);
         const debouncedEndSearch = debounce((e) => performSearch(e.target.value, 'end'), 250);
 
-        // Attach event listeners
-        document.getElementById('startSearchInput').addEventListener('input', debouncedStartSearch);
-        document.getElementById('endSearchInput').addEventListener('input', debouncedEndSearch);
+        // Attach event listeners AFTER DOM is ready
+        function attachAutocompleteListeners() {
+            console.log('Attaching autocomplete event listeners...');
+            const startInput = document.getElementById('startSearchInput');
+            const endInput = document.getElementById('endSearchInput');
+            
+            if (startInput) {
+                startInput.addEventListener('input', debouncedStartSearch);
+                console.log('✅ Start search input listener attached');
+            } else {
+                console.error('❌ Start search input not found!');
+            }
+            
+            if (endInput) {
+                endInput.addEventListener('input', debouncedEndSearch);
+                console.log('✅ End search input listener attached');
+            } else {
+                console.error('❌ End search input not found!');
+            }
+        }
+        
+        // Call immediately since script is at bottom of body
+        attachAutocompleteListeners();
         
         // Enhanced current location functionality
         function useCurrentLocation() {
@@ -1586,6 +1996,7 @@
         let crimeHeatLayer = null;
         let lightingHeatLayer = null;
         let populationHeatLayer = null;
+        let userFeedbackHeatLayer = null;
         let routeLayers = [];
         let currentLocationMarker = null;
         let currentRoutes = []; // Store all route data including steps
@@ -1604,6 +2015,9 @@
             const lon = e.latlng.lng.toFixed(4);
             
             if (clickCount === 0) {
+                // Don't create markers if in segment selection mode
+                if (isInSegmentSelection) return;
+                
                 // Set start point
                 if (startMarker) map.removeLayer(startMarker);
                 startMarker = L.marker([lat, lon], {
@@ -1621,6 +2035,9 @@
                 clickCount = 1;
                 showStatus('Start point set. Click again for end point.', 'info');
             } else {
+                // Don't create markers if in segment selection mode
+                if (isInSegmentSelection) return;
+                
                 // Set end point
                 if (endMarker) map.removeLayer(endMarker);
                 endMarker = L.marker([lat, lon], {
@@ -1782,6 +2199,42 @@
             }
         }
         
+        async function toggleUserFeedbackHeatmap() {
+            const checkbox = document.getElementById('showUserFeedbackHeatmap');
+            
+            if (checkbox.checked) {
+                if (!userFeedbackHeatLayer) {
+                    try {
+                        const response = await fetch(`${BACKEND_URL}/api/user-feedback-heatmap`);
+                        const data = await response.json();
+                        
+                        if (data.success && data.data.length > 0) {
+                            userFeedbackHeatLayer = L.heatLayer(data.data, {
+                                radius: 30,
+                                blur: 40,
+                                maxZoom: 15,
+                                max: 1.0,
+                                gradient: {0.0: 'yellow', 0.5: 'orange', 1.0: 'red'}
+                            }).addTo(map);
+                            showStatus(`User reports displayed (${data.total_reports} reports)`, 'success');
+                        } else {
+                            showStatus('No user feedback data yet', 'info');
+                            checkbox.checked = false;
+                        }
+                    } catch (error) {
+                        console.error('Error loading user feedback heatmap:', error);
+                        showStatus('Error loading user feedback', 'error');
+                        checkbox.checked = false;
+                    }
+                }
+            } else {
+                if (userFeedbackHeatLayer) {
+                    map.removeLayer(userFeedbackHeatLayer);
+                    userFeedbackHeatLayer = null;
+                }
+            }
+        }
+        
         // New function: Always set current location as START point
         async function useCurrentLocationAsStart() {
             if (!navigator.geolocation) {
@@ -1812,16 +2265,19 @@
                     document.getElementById('startLat').value = lat.toFixed(4);
                     document.getElementById('startLon').value = lon.toFixed(4);
                     
-                    if (startMarker) map.removeLayer(startMarker);
-                    startMarker = L.marker([lat, lon], {
-                        icon: L.icon({
-                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                            popupAnchor: [1, -34]
-                        })
-                    }).addTo(map).bindPopup('Start: Your Current Location').openPopup();
+                    // Don't create markers if in segment selection mode
+                    if (!isInSegmentSelection) {
+                        if (startMarker) map.removeLayer(startMarker);
+                        startMarker = L.marker([lat, lon], {
+                            icon: L.icon({
+                                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34]
+                            })
+                        }).addTo(map).bindPopup('Start: Your Current Location').openPopup();
+                    }
                     
                     map.setView([lat, lon], 15);
                     showStatus('✅ Current location set as start point', 'success');
@@ -1929,8 +2385,11 @@
                     console.error('Backend error:', data);
                 }
             } catch (error) {
-                showStatus('Error finding routes. Check backend connection.', 'error');
-                console.error(error);
+                console.error('Route error:', error);
+                // Only show error if we actually failed
+                if (!currentRoutes || currentRoutes.length === 0) {
+                    showStatus('Error finding routes. Check backend connection.', 'error');
+                }
             } finally {
                 document.getElementById('findRoutesBtn').disabled = false;
             }
@@ -2013,7 +2472,173 @@
             });
         }
         
-        // Navigation Animation Functions
+        // Real GPS Navigation Functions
+        let gpsWatchId = null;
+        let lastGPSPosition = null;
+        let lastBearing = 0;
+        let lastSpokenStep = -1;
+        const speechSynth = window.speechSynthesis;
+        
+        function speakInstruction(text) {
+            if (!speechSynth) return;
+            
+            speechSynth.cancel(); // Cancel any ongoing speech
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            
+            speechSynth.speak(utterance);
+            console.log('🔊 Speaking:', text);
+        }
+        
+        function enterNavigationMode() {
+            console.log('Entering navigation mode...');
+            
+            // Hide main UI
+            const container = document.querySelector('.container');
+            if (container) container.style.display = 'none';
+            
+            // Show navigation overlay
+            const overlay = document.getElementById('navigationOverlay');
+            overlay.classList.add('active');
+            
+            // Show rate button in navigation
+            const rateBtn = document.getElementById('navRateBtn');
+            if (rateBtn) rateBtn.classList.add('active');
+            
+            // Move map to navigation overlay
+            const mapElement = document.getElementById('map');
+            const navMapContainer = document.querySelector('.nav-map-container');
+            if (mapElement && navMapContainer) {
+                navMapContainer.appendChild(mapElement);
+                console.log('Map moved to navigation container');
+            }
+            
+            // Resize map after a short delay
+            setTimeout(() => {
+                if (map) {
+                    map.invalidateSize();
+                    console.log('Map resized');
+                }
+            }, 200);
+            
+            console.log('✅ Entered full-screen navigation mode');
+        }
+        
+        function exitNavigationMode() {
+            console.log('Exiting navigation mode...');
+            
+            // Stop navigation first
+            if (isNavigating) {
+                stopNavigation();
+            }
+            
+            // Hide rate button
+            const rateBtn = document.getElementById('navRateBtn');
+            if (rateBtn) rateBtn.classList.remove('active');
+            
+            // Hide navigation overlay
+            const overlay = document.getElementById('navigationOverlay');
+            overlay.classList.remove('active');
+            
+            // Show main UI
+            const container = document.querySelector('.container');
+            if (container) container.style.display = 'flex';
+            
+            // Move map back to main container
+            const mapElement = document.getElementById('map');
+            const mapContainer = document.getElementById('mapContainer');
+            if (mapElement && mapContainer) {
+                mapContainer.appendChild(mapElement);
+                console.log('Map moved back to main container');
+            }
+            
+            // Resize map
+            setTimeout(() => {
+                if (map) {
+                    map.invalidateSize();
+                    console.log('Map resized');
+                }
+            }, 200);
+            
+            // Clear everything like Clear All button
+            clearAllMarkers();
+            
+            console.log('✅ Exited navigation mode');
+            showStatus('Navigation ended', 'info');
+        }
+        
+        function clearAllMarkers() {
+            if (startMarker) map.removeLayer(startMarker);
+            if (endMarker) map.removeLayer(endMarker);
+            if (currentLocationMarker) map.removeLayer(currentLocationMarker);
+            startMarker = null;
+            endMarker = null;
+            currentLocationMarker = null;
+            
+            // Clear routes and directions
+            routeLayers.forEach(layer => map.removeLayer(layer));
+            routeLayers = [];
+            currentRoutes = [];
+            selectedRouteIndex = null;
+            
+            // Hide directions panel
+            const directionsPanel = document.getElementById('directionsPanel');
+            if (directionsPanel) directionsPanel.style.display = 'none';
+            
+            // Clear heatmaps
+            if (crimeHeatLayer) map.removeLayer(crimeHeatLayer);
+            if (lightingHeatLayer) map.removeLayer(lightingHeatLayer);
+            if (populationHeatLayer) map.removeLayer(populationHeatLayer);
+            if (userFeedbackHeatLayer) map.removeLayer(userFeedbackHeatLayer);
+            crimeHeatLayer = null;
+            lightingHeatLayer = null;
+            populationHeatLayer = null;
+            userFeedbackHeatLayer = null;
+            
+            // Clear checkbox states
+            document.getElementById('showCrimeHeatmap').checked = false;
+            document.getElementById('showLightingHeatmap').checked = false;
+            document.getElementById('showPopulationHeatmap').checked = false;
+            document.getElementById('showUserFeedbackHeatmap').checked = false;
+            
+            // Clear inputs
+            document.getElementById('startLat').value = '';
+            document.getElementById('startLon').value = '';
+            document.getElementById('endLat').value = '';
+            document.getElementById('endLon').value = '';
+            
+            // Clear route display
+            document.getElementById('routesContainer').innerHTML = '';
+            
+            // Reset click count
+            clickCount = 0;
+        }
+        
+        function openRatingFromNavigation() {
+            // Open rating modal while in navigation mode
+            if (currentRoutes && currentRoutes.length > 0) {
+                openRatingModal(0); // Rate the current navigating route
+            } else {
+                showStatus('No route to rate', 'warning');
+            }
+        }
+        
+        function getInstructionIcon(instruction) {
+            const lower = instruction.toLowerCase();
+            if (lower.includes('left')) return '⬅️';
+            if (lower.includes('right')) return '➡️';
+            if (lower.includes('straight') || lower.includes('continue')) return '⬆️';
+            if (lower.includes('arrive') || lower.includes('destination')) return '🏁';
+            if (lower.includes('roundabout')) return '🔄';
+            return '🧭';
+        }
+        
+        // Real GPS Navigation Functions
+        
         function startNavigation(routeIndex) {
             const route = currentRoutes[routeIndex];
             if (!route || !route.route || route.route.length < 2) {
@@ -2021,10 +2646,21 @@
                 return;
             }
             
+            if (!navigator.geolocation) {
+                showStatus('❌ GPS not supported on this device', 'error');
+                return;
+            }
+            
             // Stop any existing navigation
             if (isNavigating) {
                 stopNavigation();
             }
+            
+            // Enter full-screen navigation mode
+            enterNavigationMode();
+            
+            // Store route for navigation
+            window.currentNavigationRoute = route;
             
             // Show directions first
             showDirections(routeIndex);
@@ -2037,46 +2673,119 @@
                 iconAnchor: [16, 16]
             });
             
-            // Place car at start of route
-            const startPoint = route.route[0];
-            carMarker = L.marker(startPoint, { icon: carIcon }).addTo(map);
+            // Get current GPS position
+            console.log('Requesting GPS location...');
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    console.log('✅ GPS position acquired:', position.coords.latitude, position.coords.longitude);
+                    const currentLat = position.coords.latitude;
+                    const currentLon = position.coords.longitude;
+                    
+                    // Place car at current GPS location
+                    carMarker = L.marker([currentLat, currentLon], { icon: carIcon }).addTo(map);
+                    
+                    // Initialize navigation state
+                    isNavigating = true;
+                    currentStepIndex = 0;
+                    lastGPSPosition = { lat: currentLat, lon: currentLon };
+                    
+                    // Zoom to current location
+                    map.setView([currentLat, currentLon], 17);
+                    
+                    // Update UI
+                    const navBtn = document.querySelector(`button[onclick*="startNavigation(${routeIndex})"]`);
+                    if (navBtn) {
+                        navBtn.innerHTML = '⏸️ Stop Navigation';
+                        navBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            stopNavigation();
+                        };
+                    }
+                    
+                    console.log('✅ Initial GPS acquired, starting tracking');
+                    
+                    // Initialize navigation UI with first instruction
+                    if (route.steps && route.steps.length > 0) {
+                        document.getElementById('navIcon').textContent = getInstructionIcon(route.steps[0].instruction);
+                        document.getElementById('navInstruction').textContent = route.steps[0].instruction;
+                        document.getElementById('navDistance').textContent = 
+                            route.steps[0].distance < 1000 ? 
+                            `in ${route.steps[0].distance.toFixed(0)}m` : 
+                            `in ${(route.steps[0].distance/1000).toFixed(1)}km`;
+                        
+                        if (route.steps.length > 1) {
+                            document.getElementById('navNextStep').textContent = route.steps[1].instruction;
+                        }
+                    }
+                    
+                    const totalDist = route.distance_km;
+                    document.getElementById('navTotalDistance').textContent = 
+                        totalDist < 1 ? `${(totalDist * 1000).toFixed(0)}m` : `${totalDist.toFixed(1)}km`;
+                    
+                    showStatus('🛰️ GPS Navigation started!', 'success');
+                    
+                    // Request compass permission and start tracking
+                    requestCompassAndStartTracking(route);
+                },
+                (error) => {
+                    console.error('❌ GPS error:', error.code, error.message);
+                    showStatus(`❌ GPS Error: ${error.message}. Enable location services.`, 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
+        }
+        
+        // New function to request compass and start tracking
+        async function requestCompassAndStartTracking(route) {
+            console.log('Requesting compass permission...');
             
-            // Initialize navigation state
-            isNavigating = true;
-            currentStepIndex = 0;
-            routeProgress = 0;
-            
-            // Zoom to car
-            map.setView(startPoint, 16);
-            
-            // Update UI
-            const navBtn = document.querySelector(`button[onclick*="startNavigation(${routeIndex})"]`);
-            if (navBtn) {
-                navBtn.innerHTML = '⏸️ Stop Navigation';
-                navBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    stopNavigation();
-                };
+            // Request device orientation permission (iOS 13+)
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    const response = await DeviceOrientationEvent.requestPermission();
+                    console.log('Compass permission:', response);
+                    if (response === 'granted') {
+                        showStatus('🧭 Compass activated!', 'success');
+                    } else {
+                        showStatus('⚠️ Compass permission denied. Car won\'t rotate.', 'warning');
+                    }
+                } catch (error) {
+                    console.error('Compass permission error:', error);
+                }
+            } else {
+                console.log('Compass permission not required (non-iOS or old iOS)');
             }
             
-            showStatus('🚗 Navigation started! Following route...', 'success');
-            
-            // Start animation loop
-            animateCarMovement(route);
+            // Start GPS tracking
+            trackGPSPosition(route);
         }
         
         function stopNavigation() {
             isNavigating = false;
             
-            if (navigationAnimationId) {
-                cancelAnimationFrame(navigationAnimationId);
-                navigationAnimationId = null;
+            // Stop GPS tracking
+            if (gpsWatchId) {
+                navigator.geolocation.clearWatch(gpsWatchId);
+                gpsWatchId = null;
             }
             
             if (carMarker) {
                 map.removeLayer(carMarker);
                 carMarker = null;
             }
+            
+            // Remove compass indicator
+            const compass = document.getElementById('compassIndicator');
+            if (compass) {
+                compass.remove();
+            }
+            
+            // Remove orientation listener
+            window.removeEventListener('deviceorientation', handleOrientation);
             
             // Reset UI
             document.querySelectorAll('.direction-step').forEach(step => {
@@ -2086,10 +2795,11 @@
             const navBtns = document.querySelectorAll('button[onclick*="Navigation"]');
             navBtns.forEach((btn, idx) => {
                 if (btn.innerHTML.includes('Stop')) {
-                    btn.innerHTML = '🚗 Start Navigation';
+                    btn.innerHTML = '🚗 Navigate';
+                    const originalIndex = idx;
                     btn.onclick = (e) => {
                         e.stopPropagation();
-                        startNavigation(selectedRouteIndex);
+                        startNavigation(originalIndex);
                     };
                 }
             });
@@ -2097,86 +2807,172 @@
             showStatus('Navigation stopped', 'info');
         }
         
-        function animateCarMovement(route) {
+        function trackGPSPosition(route) {
             const routePoints = route.route;
-            const totalPoints = routePoints.length;
-            const speedKmh = 50; // 50 km/h
-            const speedMps = (speedKmh * 1000) / 3600; // meters per second
+            const destination = routePoints[routePoints.length - 1];
             
-            let currentPointIndex = 0;
-            let currentLat = routePoints[0][0];
-            let currentLon = routePoints[0][1];
-            let lastTimestamp = performance.now();
+            console.log('🎯 Starting GPS tracking...');
+            console.log('Route has', routePoints.length, 'points');
             
-            function animate(timestamp) {
+            // Add compass overlay to map
+            const compassDiv = document.createElement('div');
+            compassDiv.id = 'compassIndicator';
+            compassDiv.style.cssText = `
+                position: absolute;
+                bottom: 20px;
+                right: 10px;
+                width: 60px;
+                height: 60px;
+                background: rgba(255, 255, 255, 0.95);
+                border-radius: 50%;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                transition: transform 0.3s ease;
+            `;
+            compassDiv.innerHTML = '🧭';
+            const mapContainer = document.querySelector('.nav-map-container');
+            if (mapContainer) {
+                mapContainer.appendChild(compassDiv);
+            } else {
+                document.getElementById('map').appendChild(compassDiv);
+            }
+            console.log('✅ Compass added to map');
+            
+            // Add orientation listener
+            const handleOrientation = (event) => {
                 if (!isNavigating) return;
-                
-                const deltaTime = (timestamp - lastTimestamp) / 1000; // seconds
-                lastTimestamp = timestamp;
-                
-                // Calculate distance to travel this frame
-                const distanceToTravel = speedMps * deltaTime;
-                
-                let remainingDistance = distanceToTravel;
-                
-                while (remainingDistance > 0 && currentPointIndex < totalPoints - 1) {
-                    const nextPoint = routePoints[currentPointIndex + 1];
-                    const segmentDistance = haversine_distance_js(
-                        currentLat, currentLon,
-                        nextPoint[0], nextPoint[1]
-                    ) * 1000; // convert km to meters
+                let compassHeading = event.webkitCompassHeading || event.alpha;
+                if (compassHeading !== null) {
+                    // Rotate compass indicator
+                    compassDiv.style.transform = `rotate(${-compassHeading}deg)`;
                     
-                    if (segmentDistance <= remainingDistance) {
-                        // Move to next point
-                        currentLat = nextPoint[0];
-                        currentLon = nextPoint[1];
-                        currentPointIndex++;
-                        remainingDistance -= segmentDistance;
-                        
-                        // Check if we've reached a new step
-                        updateNavigationStep(route, currentPointIndex, totalPoints);
-                    } else {
-                        // Interpolate within segment
-                        const ratio = remainingDistance / segmentDistance;
-                        currentLat += (nextPoint[0] - currentLat) * ratio;
-                        currentLon += (nextPoint[1] - currentLon) * ratio;
-                        remainingDistance = 0;
-                    }
-                }
-                
-                // Update car marker position
-                if (carMarker) {
-                    carMarker.setLatLng([currentLat, currentLon]);
-                    
-                    // Rotate car icon based on direction
-                    if (currentPointIndex < totalPoints - 1) {
-                        const nextPoint = routePoints[currentPointIndex + 1];
-                        const bearing = calculateBearing(currentLat, currentLon, nextPoint[0], nextPoint[1]);
+                    // Update car marker rotation to match compass
+                    if (carMarker) {
                         const carIcon = carMarker.getElement();
                         if (carIcon) {
                             const carDiv = carIcon.querySelector('div');
                             if (carDiv) {
-                                carDiv.style.transform = `rotate(${bearing}deg)`;
+                                carDiv.style.transform = `rotate(${compassHeading}deg)`;
                             }
                         }
                     }
-                    
-                    // Pan map to follow car
-                    map.panTo([currentLat, currentLon], { animate: true, duration: 0.25 });
                 }
-                
-                // Check if navigation complete
-                if (currentPointIndex >= totalPoints - 1) {
-                    showStatus('🎉 You have arrived at your destination!', 'success');
-                    stopNavigation();
-                    return;
-                }
-                
-                // Continue animation
-                navigationAnimationId = requestAnimationFrame(animate);
-            }
+            };
             
-            navigationAnimationId = requestAnimationFrame(animate);
+            window.addEventListener('deviceorientation', handleOrientation);
+            console.log('✅ Compass listener added');
+            
+            let updateCount = 0;
+            
+            gpsWatchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    if (!isNavigating) {
+                        console.log('Navigation stopped, ignoring GPS update');
+                        return;
+                    }
+                    
+                    updateCount++;
+                    const currentLat = position.coords.latitude;
+                    const currentLon = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    
+                    console.log(`📍 GPS Update #${updateCount}:`, 
+                        `${currentLat.toFixed(6)}, ${currentLon.toFixed(6)}`,
+                        `±${accuracy.toFixed(1)}m`
+                    );
+                    
+                    // Update car marker position
+                    if (carMarker) {
+                        carMarker.setLatLng([currentLat, currentLon]);
+                        console.log('🚗 Car marker updated');
+                        
+                        // Pan map to follow car smoothly
+                        map.setView([currentLat, currentLon], 17, {
+                            animate: true,
+                            duration: 1
+                        });
+                        console.log('🗺️ Map centered on car');
+                    }
+                    
+                    // Update last position
+                    lastGPSPosition = { lat: currentLat, lon: currentLon };
+                    
+                    // Find closest point on route
+                    let closestPointIndex = 0;
+                    let minDistance = Infinity;
+                    
+                    for (let i = 0; i < routePoints.length; i++) {
+                        const dist = haversine_distance_js(
+                            currentLat, currentLon,
+                            routePoints[i][0], routePoints[i][1]
+                        );
+                        if (dist < minDistance) {
+                            minDistance = dist;
+                            closestPointIndex = i;
+                        }
+                    }
+                    
+                    console.log(`🎯 Closest point: ${closestPointIndex}/${routePoints.length}, ${(minDistance * 1000).toFixed(1)}m away`);
+                    
+                    // Update navigation step based on progress
+                    updateNavigationStep(route, closestPointIndex, routePoints.length);
+                    
+                    // Check distance to destination
+                    const distanceToDestination = haversine_distance_js(
+                        currentLat, currentLon,
+                        destination[0], destination[1]
+                    );
+                    
+                    console.log(`🏁 Distance to destination: ${(distanceToDestination * 1000).toFixed(0)}m`);
+                    
+                    // Update total distance in navigation overlay
+                    document.getElementById('navTotalDistance').textContent = 
+                        distanceToDestination < 1 ? 
+                        `${(distanceToDestination * 1000).toFixed(0)}m` : 
+                        `${distanceToDestination.toFixed(1)}km`;
+                    
+                    // Arrival threshold: 50 meters
+                    if (distanceToDestination < 0.05) {
+                        speakInstruction('You have arrived at your destination');
+                        showStatus('🎉 You have arrived at your destination!', 'success');
+                        setTimeout(() => exitNavigationMode(), 2000);
+                        return;
+                    }
+                    
+                    // Show distance to destination
+                    if (route.steps && route.steps[currentStepIndex]) {
+                        const distanceText = (distanceToDestination * 1000).toFixed(0) + 'm to destination';
+                        const accuracyText = accuracy < 20 ? '🟢 GPS Strong' : accuracy < 50 ? '🟡 GPS OK' : '🔴 GPS Weak';
+                        document.getElementById('routeSummary').innerHTML = `
+                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px; border-radius: 8px; margin-top: 10px;">
+                                <strong>📍 ${distanceText}</strong><br>
+                                <small>${accuracyText} (±${accuracy.toFixed(0)}m)</small>
+                            </div>
+                        `;
+                    }
+                },
+                (error) => {
+                    console.error('❌ GPS error:', error.code, error.message);
+                    if (error.code === 1) {
+                        showStatus('❌ Location permission denied. Enable in settings.', 'error');
+                    } else if (error.code === 2) {
+                        showStatus('⚠️ GPS signal unavailable. Move to open area.', 'warning');
+                    } else if (error.code === 3) {
+                        showStatus('⚠️ GPS timeout. Trying again...', 'warning');
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 30000  // 30 seconds
+                }
+            );
+            
+            console.log('✅ GPS watch started, ID:', gpsWatchId);
         }
         
         function updateNavigationStep(route, currentPointIndex, totalPoints) {
@@ -2205,6 +3001,32 @@
             if (newStepIndex !== currentStepIndex) {
                 currentStepIndex = newStepIndex;
                 
+                const instruction = route.steps[currentStepIndex].instruction;
+                const distance = route.steps[currentStepIndex].distance;
+                
+                // Update navigation overlay
+                document.getElementById('navIcon').textContent = getInstructionIcon(instruction);
+                document.getElementById('navInstruction').textContent = instruction;
+                document.getElementById('navDistance').textContent = 
+                    distance < 1000 ? `in ${distance.toFixed(0)}m` : `in ${(distance/1000).toFixed(1)}km`;
+                
+                // Show next step
+                if (currentStepIndex + 1 < route.steps.length) {
+                    const nextStep = route.steps[currentStepIndex + 1];
+                    document.getElementById('navNextStep').textContent = nextStep.instruction;
+                } else {
+                    document.getElementById('navNextStep').textContent = 'Arriving at destination';
+                }
+                
+                // Speak instruction (only once per step)
+                if (lastSpokenStep !== currentStepIndex) {
+                    const distanceText = distance < 1000 ? 
+                        `In ${distance.toFixed(0)} meters` : 
+                        `In ${(distance/1000).toFixed(1)} kilometers`;
+                    speakInstruction(`${distanceText}, ${instruction}`);
+                    lastSpokenStep = currentStepIndex;
+                }
+                
                 // Highlight current step in directions panel
                 document.querySelectorAll('.direction-step').forEach((step, idx) => {
                     if (idx === currentStepIndex) {
@@ -2214,10 +3036,6 @@
                         step.classList.remove('current-step');
                     }
                 });
-                
-                // Update status with current instruction
-                const instruction = route.steps[currentStepIndex].instruction;
-                showStatus(`🧭 ${instruction}`, 'info');
             }
         }
         
@@ -2480,14 +3298,17 @@
             if (crimeHeatLayer) map.removeLayer(crimeHeatLayer);
             if (lightingHeatLayer) map.removeLayer(lightingHeatLayer);
             if (populationHeatLayer) map.removeLayer(populationHeatLayer);
+            if (userFeedbackHeatLayer) map.removeLayer(userFeedbackHeatLayer);
             crimeHeatLayer = null;
             lightingHeatLayer = null;
             populationHeatLayer = null;
+            userFeedbackHeatLayer = null;
             
             // Clear checkbox states
             document.getElementById('showCrimeHeatmap').checked = false;
             document.getElementById('showLightingHeatmap').checked = false;
             document.getElementById('showPopulationHeatmap').checked = false;
+            document.getElementById('showUserFeedbackHeatmap').checked = false;
             
             // Clear inputs
             document.getElementById('startLat').value = '';
@@ -2535,6 +3356,9 @@
         }
         
         function setLocation(lat, lon) {
+            // Don't create markers if in segment selection mode
+            if (isInSegmentSelection) return;
+            
             if (currentLocationType === 'start' || !document.getElementById('startLat').value) {
                 document.getElementById('startLat').value = lat.toFixed(4);
                 document.getElementById('startLon').value = lon.toFixed(4);
@@ -2656,7 +3480,23 @@
             const feedback = document.getElementById('routeFeedback').value;
             
             if (currentRating > 0) {
+                // If rating is below 3 stars, show segment selection UI
+                if (currentRating < 3) {
+                    closeRatingModal();
+                    // Exit navigation mode first if active
+                    if (isNavigating) {
+                        const overlay = document.getElementById('navigationOverlay');
+                        overlay.classList.remove('active');
+                        const rateBtn = document.getElementById('navRateBtn');
+                        if (rateBtn) rateBtn.classList.remove('active');
+                    }
+                    showSegmentSelectionUI();
+                    return;
+                }
+                
                 try {
+                    const routeData = allRoutes && allRoutes[currentRouteToRate - 1] ? allRoutes[currentRouteToRate - 1] : {};
+                    
                     const response = await fetch(`${BACKEND_URL}/api/rate-route`, {
                         method: 'POST',
                         headers: {
@@ -2665,7 +3505,19 @@
                         body: JSON.stringify({
                             route_id: `route_${currentRouteToRate}`,
                             rating: currentRating,
-                            feedback: feedback
+                            feedback: feedback,
+                            route_data: {
+                                distance_km: routeData.distance_km,
+                                duration_min: routeData.duration_min,
+                                safety_score: routeData.safety_score,
+                                crime_density: routeData.crime_density,
+                                max_crime_exposure: routeData.max_crime_exposure,
+                                lighting_score: routeData.lighting_score,
+                                population_score: routeData.population_score,
+                                traffic_score: routeData.traffic_score,
+                                crime_hotspot_percentage: routeData.crime_hotspot_percentage,
+                                main_road_percentage: routeData.main_road_percentage
+                            }
                         })
                     });
                     
@@ -2681,10 +3533,352 @@
             closeRatingModal();
         }
         
+        // Mobile sidebar toggle
+        function toggleSidebarMobile() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('hide-mobile');
+        }
+        
+        // Unsafe Segment Selection
+        let unsafeSegments = [];
+        let segmentMarkers = [];
+        let currentRatedRoute = null;
+        let isInSegmentSelection = false; // Flag to prevent marker recreation
+        
+        function showSegmentSelectionUI() {
+            console.log('Showing segment selection UI');
+            console.log('currentRoutes:', currentRoutes);
+            console.log('currentRouteToRate:', currentRouteToRate);
+            
+            // Set flag to prevent marker recreation
+            isInSegmentSelection = true;
+            
+            // Store current route for feedback - use currentRoutes, not allRoutes
+            currentRatedRoute = currentRoutes && currentRoutes[currentRouteToRate - 1] ? currentRoutes[currentRouteToRate - 1] : null;
+            
+            // If no route in array, try index 0 (for navigation case)
+            if (!currentRatedRoute && currentRoutes && currentRoutes.length > 0) {
+                currentRatedRoute = currentRoutes[0];
+                console.log('Using first route from currentRoutes');
+            }
+            
+            if (!currentRatedRoute || !currentRatedRoute.route) {
+                console.error('No valid route found for feedback');
+                console.log('Available routes:', currentRoutes);
+                showStatus('❌ Cannot load route for feedback', 'error');
+                return;
+            }
+            
+            console.log('Route to mark:', currentRatedRoute);
+            console.log('Route has', currentRatedRoute.route.length, 'points');
+            
+            // Hide main UI and navigation overlay
+            const container = document.querySelector('.container');
+            if (container) {
+                container.style.display = 'none';
+                console.log('Container hidden');
+            }
+            const navOverlay = document.getElementById('navigationOverlay');
+            if (navOverlay) {
+                navOverlay.classList.remove('active');
+                console.log('Nav overlay hidden');
+            }
+            
+            // Show segment selection overlay
+            const overlay = document.getElementById('segmentSelectionOverlay');
+            if (overlay) {
+                overlay.classList.add('active');
+                console.log('Segment overlay shown');
+            } else {
+                console.error('Segment overlay not found!');
+                return;
+            }
+            
+            // Move map to segment overlay
+            const mapElement = document.getElementById('map');
+            const segmentMapContainer = document.getElementById('segmentMapContainer');
+            if (mapElement && segmentMapContainer) {
+                segmentMapContainer.appendChild(mapElement);
+                console.log('Map moved to segment container');
+            } else {
+                console.error('Map or container not found!', { mapElement, segmentMapContainer });
+            }
+            
+            // Resize and setup map - SIMPLIFIED
+            setTimeout(() => {
+                console.log('=== SEGMENT SELECTION MAP SETUP ===');
+                
+                if (!map) {
+                    console.error('❌ Map object is null');
+                    return;
+                }
+                
+                // Validate route data first
+                if (!currentRatedRoute || !currentRatedRoute.route || currentRatedRoute.route.length < 2) {
+                    console.error('❌ Invalid route data:', currentRatedRoute);
+                    showStatus('❌ Cannot display route - invalid data', 'error');
+                    return;
+                }
+                
+                console.log('✅ Route data valid:', currentRatedRoute.route.length, 'points');
+                
+                // Invalidate size
+                map.invalidateSize();
+                console.log('✅ Map size invalidated');
+                
+                // Remove ALL existing layers except the base tile layer
+                const layersToRemove = [];
+                map.eachLayer(layer => {
+                    if (!(layer instanceof L.TileLayer)) {
+                        layersToRemove.push(layer);
+                    }
+                });
+                
+                console.log('Removing', layersToRemove.length, 'existing layers...');
+                layersToRemove.forEach(layer => {
+                    try {
+                        map.removeLayer(layer);
+                    } catch (e) {}
+                });
+                
+                // Clear references
+                startMarker = null;
+                endMarker = null;
+                currentLocationMarker = null;
+                carMarker = null;
+                routeLayers = [];
+                
+                console.log('✅ All layers cleared');
+                
+                // Draw the route NOW
+                const routeCoords = currentRatedRoute.route.map(point => [point[0], point[1]]);
+                console.log('Creating polyline with', routeCoords.length, 'coordinates');
+                console.log('First:', routeCoords[0], 'Last:', routeCoords[routeCoords.length - 1]);
+                
+                const routeLayer = L.polyline(routeCoords, {
+                    color: '#667eea',
+                    weight: 10,
+                    opacity: 1,
+                    interactive: true
+                });
+                
+                console.log('Adding route to map...');
+                routeLayer.addTo(map);
+                routeLayers.push(routeLayer);
+                console.log('✅ ROUTE ADDED TO MAP');
+                
+                // Verify it's there
+                let polylineCount = 0;
+                map.eachLayer(layer => {
+                    if (layer instanceof L.Polyline) polylineCount++;
+                });
+                console.log('✅ Confirmed:', polylineCount, 'polyline(s) on map');
+                
+                // Fit to bounds
+                try {
+                    map.fitBounds(routeLayer.getBounds(), { padding: [50, 50] });
+                    console.log('✅ Map fitted to route');
+                } catch (e) {
+                    console.error('❌ Error fitting bounds:', e);
+                }
+                
+                // Add touch handlers
+                let isDragging = false;
+                let lastMarkedPoint = null;
+                
+                routeLayer.on('mousedown touchstart', (e) => {
+                    isDragging = true;
+                    const latlng = e.latlng;
+                    markUnsafeSegment(latlng.lat, latlng.lng);
+                    lastMarkedPoint = latlng;
+                });
+                
+                map.on('mousemove touchmove', (e) => {
+                    if (!isDragging || !e.latlng) return;
+                    
+                    if (lastMarkedPoint && map.distance(lastMarkedPoint, e.latlng) < 10) return;
+                    
+                    markUnsafeSegment(e.latlng.lat, e.latlng.lng);
+                    lastMarkedPoint = e.latlng;
+                });
+                
+                map.on('mouseup touchend', () => {
+                    isDragging = false;
+                    lastMarkedPoint = null;
+                });
+                
+                console.log('✅ Touch handlers added');
+                console.log('=== SETUP COMPLETE ===');
+            }, 500);
+            
+            showStatus('Touch and drag on the route to mark unsafe areas', 'info');
+        }
+        
+        function markUnsafeSegment(lat, lon) {
+            console.log(`Marking unsafe segment: ${lat}, ${lon}`);
+            
+            // Add to unsafe segments array
+            unsafeSegments.push({ lat, lon });
+            
+            // Add red marker
+            const marker = L.circleMarker([lat, lon], {
+                radius: 8,
+                fillColor: '#ef4444',
+                color: '#ffffff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).addTo(map);
+            
+            segmentMarkers.push(marker);
+            
+            // Update count
+            document.getElementById('unsafeCount').textContent = unsafeSegments.length;
+            
+            showStatus(`Marked ${unsafeSegments.length} unsafe area(s)`, 'info');
+        }
+        
+        function cancelSegmentSelection() {
+            // Clear flag
+            isInSegmentSelection = false;
+            
+            // Clear markers
+            segmentMarkers.forEach(marker => map.removeLayer(marker));
+            segmentMarkers = [];
+            unsafeSegments = [];
+            
+            // Hide overlay
+            const overlay = document.getElementById('segmentSelectionOverlay');
+            overlay.classList.remove('active');
+            
+            // Show main UI
+            document.querySelector('.container').style.display = 'flex';
+            
+            // Move map back
+            const mapElement = document.getElementById('map');
+            document.getElementById('mapContainer').appendChild(mapElement);
+            
+            setTimeout(() => map.invalidateSize(), 200);
+            
+            showStatus('Feedback cancelled', 'info');
+        }
+        
+        async function submitUnsafeSegments() {
+            // Clear flag
+            isInSegmentSelection = false;
+            
+            if (unsafeSegments.length === 0) {
+                showStatus('⚠️ Please mark at least one unsafe area', 'warning');
+                return;
+            }
+            
+            try {
+                // Submit to backend
+                const response = await fetch(`${BACKEND_URL}/api/submit-unsafe-segments`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        route_id: `route_${currentRouteToRate}`,
+                        rating: currentRating,
+                        unsafe_segments: unsafeSegments,
+                        route_data: {
+                            distance_km: currentRatedRoute.distance_km,
+                            safety_score: currentRatedRoute.safety_score
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showStatus(`✅ Thank you! ${unsafeSegments.length} unsafe area(s) reported`, 'success');
+                } else {
+                    showStatus('⚠️ Feedback saved locally', 'warning');
+                }
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                showStatus('⚠️ Could not submit feedback, but saved locally', 'warning');
+            }
+            
+            // Clean up
+            segmentMarkers.forEach(marker => map.removeLayer(marker));
+            segmentMarkers = [];
+            unsafeSegments = [];
+            
+            // Hide overlay
+            const overlay = document.getElementById('segmentSelectionOverlay');
+            overlay.classList.remove('active');
+            
+            // Show main UI
+            document.querySelector('.container').style.display = 'flex';
+            
+            // Move map back
+            const mapElement = document.getElementById('map');
+            document.getElementById('mapContainer').appendChild(mapElement);
+            
+            setTimeout(() => map.invalidateSize(), 200);
+        }
+        
         // Initialize saved locations on page load
-        window.onload = function() {
+        window.onload = async function() {
             loadSavedLocations();
+            
+            // Test backend connection
+            console.log('Testing connection to:', BACKEND_URL);
+            console.log('Current hostname:', window.location.hostname);
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/health`, { 
+                    method: 'GET',
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Backend connected successfully', data);
+                    showStatus('✅ Connected to server', 'success');
+                } else {
+                    console.error('❌ Backend connection failed:', response.status);
+                    showStatus(`⚠️ Server error: ${response.status}. Try refreshing.`, 'error');
+                }
+            } catch (error) {
+                console.error('❌ Backend connection error:', error);
+                console.error('Error details:', error.message);
+                
+                // Immediately redirect to certificate page if connection fails
+                if (error.message.includes('Failed to fetch')) {
+                    alert('SSL Certificate Setup Required!\n\n' +
+                          'You will now be redirected to accept the certificate.\n\n' +
+                          'Steps:\n' +
+                          '1. Click "Advanced" or "Show Details"\n' +
+                          '2. Click "Proceed to localhost (unsafe)"\n' +
+                          '3. You will see a JSON response\n' +
+                          '4. Close that tab and come back here\n' +
+                          '5. Refresh this page (Cmd+Shift+R)\n\n' +
+                          'Click OK to continue...');
+                    
+                    // Redirect to certificate page
+                    window.location.href = 'https://localhost:5000/api/health';
+                    return;
+                }
+                
+                // Show helpful error message
+                if (error.message.includes('certificate')) {
+                    showStatus('⚠️ SSL certificate error. Redirecting to fix...', 'warning');
+                } else {
+                    showStatus('⚠️ Connection failed: ' + error.message, 'error');
+                }
+            }
         };
+        
+        // Log any global errors
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+        });
+        
+        console.log('✅ Page loaded successfully');
         </script>
 </body>
 </html>
