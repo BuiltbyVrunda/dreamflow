@@ -1,230 +1,467 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sylvie - Women's Safety</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sylvie-neumorphic.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sylvie-neumorphic.css') }}?v=15">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}?v=1">
 </head>
+
 <body>
-    <!-- Floating animated elements -->
-    <div class="floating-element" style="top: 12%; left: 10%; font-size: 2.5rem; animation: float1 12s infinite ease-in-out;">💕</div>
-    <div class="floating-element" style="top: 25%; right: 15%; font-size: 2rem; animation: float2 15s infinite ease-in-out;">❤️</div>
-    <div class="floating-element" style="top: 45%; left: 20%; font-size: 2.2rem; animation: float3 18s infinite ease-in-out;">🌸</div>
-    <div class="floating-element" style="top: 60%; right: 25%; font-size: 2.3rem; animation: float4 14s infinite ease-in-out;">💖</div>
-    <div class="floating-element" style="top: 75%; left: 30%; font-size: 1.9rem; animation: float5 16s infinite ease-in-out;">💐</div>
-    <div class="floating-element" style="top: 35%; right: 8%; font-size: 2.1rem; animation: float2 13s infinite ease-in-out;">🌺</div>
-    <div class="floating-element" style="top: 50%; left: 12%; font-size: 2.4rem; animation: float3 17s infinite ease-in-out;">💗</div>
-    <div class="floating-element" style="top: 18%; right: 22%; font-size: 2rem; animation: float4 19s infinite ease-in-out;">💝</div>
-    <div class="floating-element" style="top: 70%; right: 18%; font-size: 1.8rem; animation: float1 14s infinite ease-in-out;">🌹</div>
-    <div class="floating-element" style="top: 85%; left: 40%; font-size: 2.2rem; animation: float5 15s infinite ease-in-out;">💗</div>
-    <div class="floating-element" style="top: 8%; left: 25%; font-size: 2rem; animation: float1 16s infinite ease-in-out;">💓</div>
-    <div class="floating-element" style="top: 40%; right: 12%; font-size: 2.3rem; animation: float3 14s infinite ease-in-out;">❤️</div>
-    <div class="floating-element" style="top: 55%; left: 5%; font-size: 2.1rem; animation: float2 18s infinite ease-in-out;">💕</div>
-    <div class="floating-element" style="top: 28%; left: 35%; font-size: 1.9rem; animation: float4 13s infinite ease-in-out;">💖</div>
-    <div class="floating-element" style="top: 65%; right: 10%; font-size: 2.2rem; animation: float5 17s infinite ease-in-out;">💝</div>
-    <div class="floating-element" style="top: 15%; right: 30%; font-size: 2rem; animation: float1 15s infinite ease-in-out;">💗</div>
-    <div class="floating-element" style="top: 80%; left: 15%; font-size: 2.4rem; animation: float3 19s infinite ease-in-out;">❤️</div>
-    <div class="floating-element" style="top: 32%; left: 45%; font-size: 2.1rem; animation: float2 12s infinite ease-in-out;">💓</div>
-    <div class="floating-element" style="top: 48%; right: 35%; font-size: 1.8rem; animation: float4 16s infinite ease-in-out;">💕</div>
-    <div class="floating-element" style="top: 90%; right: 28%; font-size: 2rem; animation: float5 14s infinite ease-in-out;">💖</div>
+    <!-- Floating animated hand-drawn elements -->
+    <div class="floating-element" style="top: 8%; left: 8%; animation: float1 14s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-heart.svg') }}" alt="" width="45">
+    </div>
+    <div class="floating-element" style="top: 22%; right: 12%; animation: float2 16s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-flower.svg') }}" alt="" width="50">
+    </div>
+    <div class="floating-element" style="top: 50%; left: 5%; animation: float3 18s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-butterfly.svg') }}" alt="" width="48">
+    </div>
+    <div class="floating-element" style="top: 68%; right: 15%; animation: float4 15s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-star.svg') }}" alt="" width="42">
+    </div>
+    <div class="floating-element" style="top: 85%; left: 20%; animation: float5 17s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-leaf.svg') }}" alt="" width="46">
+    </div>
+    <div class="floating-element" style="top: 35%; right: 8%; animation: float2 19s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-flower.svg') }}" alt="" width="44">
+    </div>
+    <div class="floating-element" style="top: 15%; right: 35%; animation: float4 13s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-heart.svg') }}" alt="" width="40">
+    </div>
+    <div class="floating-element" style="top: 75%; right: 10%; animation: float1 16s infinite ease-in-out;">
+        <img src="{{ url_for('static', filename='images/decorative/hand-drawn-butterfly.svg') }}" alt="" width="46">
+    </div>
 
     <div class="sylvie-container">
         <!-- Top Bar -->
         <div class="sylvie-topbar">
-            <a href="{{ url_for('main.index') }}" class="home-link">
-                <i class="fas fa-chevron-left"></i>
-                <span>Home</span>
-            </a>
-            <div class="profile-icon">
-                <i class="fas fa-user"></i>
-            </div>
-        </div>
-
-        <!-- Logo Section -->
-        <div class="sylvie-logo-section">
-            <img src="{{ url_for('static', filename='images/sylvie-logo.png') }}" alt="Sylvie Logo" style="width: 100%; max-width: 400px; margin: 0 auto; display: block;">
-        </div>
-
-        <!-- Videos Section -->
-        <div class="sylvie-section">
-            <div class="section-header">
-                <h2 class="section-title">Videos</h2>
-                <div class="nav-arrows">
-                    <i class="fas fa-chevron-left"></i>
-                    <i class="fas fa-chevron-right"></i>
+            <div></div>
+            <div>
+                {% if session.get('logged_in') %}
+                {% set display_name = (session.get('user_name') or session.get('user_email') or '') %}
+                {% set initial = display_name[:1] | upper %}
+                <div class="profile-icon" id="sidebarToggle" role="button">
+                    {{ initial or 'U' }}
                 </div>
-            </div>
-            
-            <div class="video-carousel">
-                <div class="video-card"></div>
-                <div class="video-card"></div>
-                <div class="video-card"></div>
-                <div class="video-card"></div>
-                <div class="video-card"></div>
-            </div>
-            
-            <div class="carousel-dots">
-                <div class="dot active"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-        </div>
-
-        <!-- Support Section -->
-        <div class="sylvie-section">
-            <div class="section-header">
-                <h2 class="section-title">How we support you</h2>
-                <div class="nav-arrows">
-                    <i class="fas fa-chevron-left"></i>
-                    <i class="fas fa-chevron-right"></i>
+                {% else %}
+                <div class="profile-icon" id="sidebarToggle" role="button">
+                    <i class="fas fa-user"></i>
                 </div>
+                {% endif %}
             </div>
-            
-            <div class="support-grid">
-                <a href="#" class="support-card">
-                    <div class="support-icon safety">
-                        <i class="fas fa-shield-heart"></i>
-                    </div>
-                    <span class="support-label">Safety Tips</span>
-                </a>
-                
-                <a href="{{ url_for('main.emergency_contacts') }}" class="support-card">
-                    <div class="support-icon emergency">
-                        <i class="fas fa-phone-volume"></i>
-                    </div>
-                    <span class="support-label">Emergency Contacts</span>
-                </a>
-                
-                <a href="{{ url_for('main.safe_routes') }}" class="support-card">
-                    <div class="support-icon maps">
-                        <i class="fas fa-map-location-dot"></i>
-                    </div>
-                    <span class="support-label">Safe Maps</span>
-                </a>
-                
-                <a href="{{ url_for('main.fake_call') }}" class="support-card">
-                    <div class="support-icon call">
-                        <i class="fas fa-phone-slash"></i>
-                    </div>
-                    <span class="support-label">Fake Call</span>
-                </a>
-                
-                <a href="#" class="support-card">
-                    <div class="support-icon sos">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <span class="support-label">SOS Tips</span>
-                </a>
-                
-                <a href="{{ url_for('main.community_support') }}" class="support-card">
-                    <div class="support-icon community">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <span class="support-label">Community Support</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Bottom Navigation -->
-        <div class="sylvie-bottom-nav">
-            <div class="nav-container">
-                <a href="{{ url_for('main.index') }}" class="nav-item">
-                    <div class="nav-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <span>Home</span>
-                </a>
-                
-                <a href="{{ url_for('main.safe_routes') }}" class="nav-item">
-                    <div class="nav-icon">
-                        <i class="fas fa-map-marked-alt"></i>
-                    </div>
-                    <span>Maps</span>
-                </a>
-                
-                <div class="sos-button">
-                    <a href="{{ url_for('main.sos_center') }}" class="sos-circle">
-                        SOS
-                    </a>
-                    <span class="sos-label">long press to activate</span>
-                </div>
-                
-                <a href="{{ url_for('main.report_incident') }}" class="nav-item">
-                    <div class="nav-icon">
-                        <i class="fas fa-flag"></i>
-                    </div>
-                    <span>Reports</span>
-                </a>
-                
-                <a href="{{ url_for('main.community_support') }}" class="nav-item">
-                    <div class="nav-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <span>Community</span>
-                </a>
-            </div>
+            <ul class="dropdown-menu dropdown-menu-end sylvie-dropdown" aria-labelledby="profileDropdown">
+                {% if session.get('logged_in') %}
+                <li><a class="dropdown-item sylvie-dropdown-item" href="{{ url_for('main.settings') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #FFE8EE, #FFD6E0);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="35" r="15" stroke="#B0143A" stroke-width="3" fill="none"
+                                    stroke-linecap="round" />
+                                <path d="M25 75 Q30 60, 50 60 Q70 60, 75 75" stroke="#B0143A" stroke-width="3"
+                                    fill="none" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        Account
+                    </a></li>
+                <li><a class="dropdown-item sylvie-dropdown-item" href="{{ url_for('main.settings') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #E6F2FF, #D0E7FF);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="20" stroke="#0A1A4F" stroke-width="2.5" fill="none" />
+                                <path d="M50 30 L52 40 M50 70 L48 60 M30 50 L40 52 M70 50 L60 48" stroke="#0A1A4F"
+                                    stroke-width="2.5" stroke-linecap="round" />
+                                <path d="M37 37 L42 42 M63 63 L58 58 M63 37 L58 42 M37 63 L42 58" stroke="#0A1A4F"
+                                    stroke-width="2.5" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        Settings
+                    </a></li>
+                <li><a class="dropdown-item sylvie-dropdown-item" href="{{ url_for('main.my_reports') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #FFF9E6, #FFECCC);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="30" y="20" width="40" height="55" rx="3" stroke="#F4C542" stroke-width="2.5"
+                                    fill="none" />
+                                <line x1="40" y1="35" x2="60" y2="35" stroke="#F4C542" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <line x1="40" y1="45" x2="60" y2="45" stroke="#F4C542" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <line x1="40" y1="55" x2="55" y2="55" stroke="#F4C542" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        My Reports
+                    </a></li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item sylvie-dropdown-item text-danger" href="{{ url_for('main.logout') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #FFE8E8, #FFD6D6);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M40 30 L40 70 M60 30 L60 70" stroke="#B0143A" stroke-width="2.5"
+                                    stroke-linecap="round" />
+                                <path d="M60 50 L75 50 M70 45 L75 50 L70 55" stroke="#B0143A" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        Logout
+                    </a></li>
+                {% else %}
+                <li><a class="dropdown-item sylvie-dropdown-item" href="{{ url_for('main.login') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #FFE8EE, #FFD6E0);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="35" r="15" stroke="#B0143A" stroke-width="3" fill="none"
+                                    stroke-linecap="round" />
+                                <path d="M25 75 Q30 60, 50 60 Q70 60, 75 75" stroke="#B0143A" stroke-width="3"
+                                    fill="none" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        Login
+                    </a></li>
+                <li><a class="dropdown-item sylvie-dropdown-item" href="{{ url_for('main.settings') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #E6F2FF, #D0E7FF);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="20" stroke="#0A1A4F" stroke-width="2.5" fill="none" />
+                                <path d="M50 30 L52 40 M50 70 L48 60 M30 50 L40 52 M70 50 L60 48" stroke="#0A1A4F"
+                                    stroke-width="2.5" stroke-linecap="round" />
+                                <path d="M37 37 L42 42 M63 63 L58 58 M63 37 L58 42 M37 63 L42 58" stroke="#0A1A4F"
+                                    stroke-width="2.5" stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        Settings
+                    </a></li>
+                <li><a class="dropdown-item sylvie-dropdown-item" href="{{ url_for('main.my_reports') }}">
+                        <div class="icon-circle" style="background: linear-gradient(145deg, #FFF9E6, #FFECCC);">
+                            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="30" y="20" width="40" height="55" rx="3" stroke="#F4C542" stroke-width="2.5"
+                                    fill="none" />
+                                <line x1="40" y1="35" x2="60" y2="35" stroke="#F4C542" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <line x1="40" y1="45" x2="60" y2="45" stroke="#F4C542" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <line x1="40" y1="55" x2="55" y2="55" stroke="#F4C542" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        My Reports
+                    </a></li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 
+    <!-- Logo Section -->
+    <div class="sylvie-logo-section">
+        <img src="{{ url_for('static', filename='images/sylvie-logo-elegant.png') }}" alt="Sylvie Logo"
+            class="sylvie-logo-img">
+    </div>
+
+    <!-- Videos Section -->
+    <div class="sylvie-section white-section">
+        <div class="section-header section-header-center">
+            <h2 class="section-title">Our Vision of Women Empowerment</h2>
+            <div class="nav-arrows">
+                <i class="fas fa-chevron-left" id="carousel-prev"></i>
+                <i class="fas fa-chevron-right" id="carousel-next"></i>
+            </div>
+        </div>
+
+        <div class="video-container">
+            <div class="video-slider">
+                <div class="video-slide">
+                    <video width="100%" height="100%" autoplay muted loop playsinline>
+                        <source src="{{ url_for('static', filename='videos/video1.mp4') }}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-slide">
+                    <video width="100%" height="100%" autoplay muted loop playsinline>
+                        <source src="{{ url_for('static', filename='videos/video2.mp4') }}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-slide">
+                    <video width="100%" height="100%" autoplay muted loop playsinline>
+                        <source src="{{ url_for('static', filename='videos/video3.mp4') }}" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </div>
+
+        <div class="carousel-dots">
+            <div class="dot active" data-index="0"></div>
+            <div class="dot" data-index="1"></div>
+            <div class="dot" data-index="2"></div>
+        </div>
+    </div>
+
+    <!-- Support Section -->
+    <div class="sylvie-section white-section">
+        <div class="section-header section-header-center">
+            <h2 class="section-title">How we support you</h2>
+            <div class="nav-arrows">
+                <i class="fas fa-chevron-left"></i>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="support-grid">
+            <a href="#" class="support-card">
+                <div class="support-icon safety">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: 100%;">
+                        <path d="M50 15 L75 25 C75 45, 75 60, 50 85 C25 60, 25 45, 25 25 Z" stroke="#B0143A"
+                            stroke-width="3" fill="none" stroke-linecap="round" />
+                        <path
+                            d="M50 38 C45 38, 42 41, 42 46 C42 51, 50 60, 50 60 C50 60, 58 51, 58 46 C58 41, 55 38, 50 38 Z"
+                            fill="#FF6B9D" stroke="#B0143A" stroke-width="2" />
+                    </svg>
+                </div>
+                <span class="support-label">Safety Tips</span>
+            </a>
+
+            <a href="{{ url_for('main.emergency_contacts') }}" class="support-card">
+                <div class="support-icon emergency">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: 100%;">
+                        <rect x="30" y="20" width="40" height="60" rx="8" stroke="#B0143A" stroke-width="3"
+                            fill="none" />
+                        <path d="M35 30 Q40 28, 45 30" stroke="#B0143A" stroke-width="2.5" stroke-linecap="round" />
+                        <path d="M55 30 Q60 28, 65 30" stroke="#B0143A" stroke-width="2.5" stroke-linecap="round" />
+                        <circle cx="50" cy="55" r="8" fill="#FF6B9D" />
+                        <path d="M30 40 L25 38 M70 40 L75 38" stroke="#B0143A" stroke-width="2.5"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+                <span class="support-label">Emergency Contacts</span>
+            </a>
+
+            <a href="{{ url_for('main.safe_routes') }}" class="support-card">
+                <div class="support-icon maps">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: 100%;">
+                        <path d="M25 30 L35 25 L50 35 L65 25 L75 30 L75 70 L65 75 L50 65 L35 75 L25 70 Z"
+                            stroke="#0A1A4F" stroke-width="2.5" fill="none" stroke-linejoin="round" />
+                        <path d="M35 25 L35 75 M50 35 L50 65 M65 25 L65 75" stroke="#0A1A4F" stroke-width="2"
+                            stroke-linecap="round" />
+                        <circle cx="50" cy="50" r="8" fill="#5A8ED9" stroke="#0A1A4F" stroke-width="2" />
+                    </svg>
+                </div>
+                <span class="support-label">Safe Maps</span>
+            </a>
+
+            <a href="{{ url_for('main.fake_call') }}" class="support-card">
+                <div class="support-icon call">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: 100%;">
+                        <rect x="28" y="25" width="35" height="50" rx="6" stroke="#0A1A4F" stroke-width="2.5"
+                            fill="none" />
+                        <line x1="30" y1="68" x2="61" y2="68" stroke="#0A1A4F" stroke-width="2" />
+                        <circle cx="45" cy="63" r="3" fill="#0A1A4F" />
+                        <line x1="20" y1="80" x2="75" y2="25" stroke="#B0143A" stroke-width="4"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+                <span class="support-label">Fake Call</span>
+            </a>
+
+            <a href="#" class="support-card">
+                <div class="support-icon sos">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: 100%;">
+                        <path d="M50 25 L55 45 L75 45 L60 58 L67 78 L50 65 L33 78 L40 58 L25 45 L45 45 Z" fill="#F4C542"
+                            stroke="#E5A000" stroke-width="2.5" stroke-linejoin="round" />
+                        <circle cx="35" cy="35" r="2" fill="#FFE8B3" />
+                        <circle cx="65" cy="40" r="2" fill="#FFE8B3" />
+                        <circle cx="55" cy="25" r="1.5" fill="#FFE8B3" />
+                    </svg>
+                </div>
+                <span class="support-label">SOS Tips</span>
+            </a>
+
+            <a href="{{ url_for('main.community_support') }}" class="support-card">
+                <div class="support-icon community">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 100%; height: 100%;">
+                        <circle cx="35" cy="35" r="8" fill="#5A8E7F" stroke="#3A6E5F" stroke-width="2" />
+                        <circle cx="65" cy="35" r="8" fill="#5A8E7F" stroke="#3A6E5F" stroke-width="2" />
+                        <circle cx="50" cy="32" r="9" fill="#5A8E7F" stroke="#3A6E5F" stroke-width="2" />
+                        <path
+                            d="M20 70 C20 58, 27 50, 35 50 C35 50, 35 65, 35 70 M45 70 C45 55, 50 45, 50 45 C50 45, 55 55, 55 70 M65 70 C65 65, 65 50, 65 50 C73 50, 80 58, 80 70"
+                            stroke="#3A6E5F" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <span class="support-label">Community Support</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="sylvie-bottom-nav">
+        <div class="nav-container">
+            <a href="{{ url_for('main.index') }}" class="nav-item">
+                <div class="nav-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 60%; height: 60%;">
+                        <path d="M50 25 L80 45 L80 80 L60 80 L60 60 L40 60 L40 80 L20 80 L20 45 Z" stroke="currentColor"
+                            stroke-width="3" fill="none" stroke-linejoin="round" />
+                        <rect x="45" y="35" width="10" height="10" fill="currentColor" />
+                    </svg>
+                </div>
+                <span>Home</span>
+            </a>
+
+            <a href="{{ url_for('main.safe_routes') }}" class="nav-item">
+                <div class="nav-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 60%; height: 60%;">
+                        <path d="M25 30 L35 25 L50 35 L65 25 L75 30 L75 70 L65 75 L50 65 L35 75 L25 70 Z"
+                            stroke="currentColor" stroke-width="2.5" fill="none" stroke-linejoin="round" />
+                        <path d="M35 25 L35 75 M50 35 L50 65 M65 25 L65 75" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+                <span>Maps</span>
+            </a>
+
+            <div class="sos-button">
+                <a href="{{ url_for('main.sos_center') }}" class="sos-circle">
+                    SOS
+                </a>
+                <span class="sos-label">long press to activate</span>
+            </div>
+
+            <a href="{{ url_for('main.report_incident') }}" class="nav-item">
+                <div class="nav-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 60%; height: 60%;">
+                        <path d="M30 25 L40 25 L40 75 L30 80 Z M40 25 L50 35 L50 75 L40 75 Z" stroke="currentColor"
+                            stroke-width="2.5" fill="currentColor" stroke-linejoin="round" />
+                        <circle cx="45" cy="40" r="4" fill="white" />
+                    </svg>
+                </div>
+                <span>Reports</span>
+            </a>
+
+            <a href="{{ url_for('main.community_support') }}" class="nav-item">
+                <div class="nav-icon">
+                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="width: 60%; height: 60%;">
+                        <circle cx="35" cy="35" r="8" fill="currentColor" />
+                        <circle cx="65" cy="35" r="8" fill="currentColor" />
+                        <circle cx="50" cy="32" r="9" fill="currentColor" />
+                        <path d="M20 70 C20 58, 27 50, 35 50 M50 70 C50 55, 50 45, 50 45 M65 70 C65 58, 73 50, 80 70"
+                            stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <span>Community</span>
+            </a>
+        </div>
+    </div>
+    </div>
+
     <script>
-        // Video carousel scroll
-        const carousel = document.querySelector('.video-carousel');
+        // Video carousel animation
+        const slider = document.querySelector('.video-slider');
         const dots = document.querySelectorAll('.carousel-dots .dot');
-        
-        carousel.addEventListener('scroll', () => {
-            const scrollPercentage = carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
-            const activeIndex = Math.round(scrollPercentage * (dots.length - 1));
-            
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === activeIndex);
+        const prevBtn = document.getElementById('carousel-prev');
+        const nextBtn = document.getElementById('carousel-next');
+        let currentIndex = 0;
+        const totalSlides = 3;
+        let autoSlideInterval;
+
+        function slideToIndex(index, smooth = true) {
+            currentIndex = index % totalSlides;
+            const offset = -currentIndex * 33.333;
+
+            if (smooth) {
+                slider.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            } else {
+                slider.style.transition = 'none';
+            }
+
+            slider.style.transform = `translateX(${offset}%)`;
+
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === currentIndex);
             });
-        });
-        
+
+            // Reset auto-slide timer
+            clearInterval(autoSlideInterval);
+            startAutoSlide();
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                const newIndex = currentIndex === totalSlides - 1 ? 0 : currentIndex + 1;
+                slideToIndex(newIndex, true);
+            }, 5000);
+        }
+
         // Dot navigation
         dots.forEach((dot, index) => {
             dot.addEventListener('click', () => {
-                const scrollAmount = (carousel.scrollWidth - carousel.clientWidth) / (dots.length - 1) * index;
-                carousel.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+                slideToIndex(index, true);
             });
         });
-        
+
+        // Arrow navigation
+        prevBtn.addEventListener('click', () => {
+            const newIndex = currentIndex === 0 ? totalSlides - 1 : currentIndex - 1;
+            slideToIndex(newIndex, true);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            const newIndex = currentIndex === totalSlides - 1 ? 0 : currentIndex + 1;
+            slideToIndex(newIndex, true);
+        });
+
+        // Start auto-slide
+        startAutoSlide();
+
         // SOS long press
         const sosButton = document.querySelector('.sos-circle');
         let pressTimer;
-        
+
         sosButton.addEventListener('mousedown', () => {
             pressTimer = setTimeout(() => {
                 window.location.href = "{{ url_for('main.sos_center') }}";
             }, 1000);
         });
-        
+
         sosButton.addEventListener('mouseup', () => {
             clearTimeout(pressTimer);
         });
-        
+
         sosButton.addEventListener('touchstart', (e) => {
             e.preventDefault();
             pressTimer = setTimeout(() => {
                 window.location.href = "{{ url_for('main.sos_center') }}";
             }, 1000);
         });
-        
+
         sosButton.addEventListener('touchend', () => {
             clearTimeout(pressTimer);
         });
     </script>
+
+    <!-- Bootstrap JS for dropdown functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Sidebar Toggle Script -->
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
 </body>
+
 </html>

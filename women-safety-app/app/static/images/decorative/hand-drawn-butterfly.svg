@@ -1,0 +1,15 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="18" cy="20" rx="8" ry="12" stroke="#B8A4F5" stroke-width="2.5" fill="none" transform="rotate(-20 18 20)" style="filter: url(#roughen);"/>
+  <ellipse cx="32" cy="20" rx="8" ry="12" stroke="#B8A4F5" stroke-width="2.5" fill="none" transform="rotate(20 32 20)" style="filter: url(#roughen);"/>
+  <ellipse cx="18" cy="32" rx="6" ry="9" stroke="#DDB5F5" stroke-width="2.5" fill="none" transform="rotate(-15 18 32)" style="filter: url(#roughen);"/>
+  <ellipse cx="32" cy="32" rx="6" ry="9" stroke="#DDB5F5" stroke-width="2.5" fill="none" transform="rotate(15 32 32)" style="filter: url(#roughen);"/>
+  <line x1="25" y1="12" x2="25" y2="38" stroke="#5D4E7A" stroke-width="2" stroke-linecap="round" style="filter: url(#roughen);"/>
+  <line x1="25" y1="10" x2="22" y2="7" stroke="#5D4E7A" stroke-width="1.5" stroke-linecap="round" style="filter: url(#roughen);"/>
+  <line x1="25" y1="10" x2="28" y2="7" stroke="#5D4E7A" stroke-width="1.5" stroke-linecap="round" style="filter: url(#roughen);"/>
+  <defs>
+    <filter id="roughen">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>

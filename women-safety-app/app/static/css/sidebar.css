@@ -1,0 +1,123 @@
+/* ========== SLIDING SIDEBAR NAVIGATION ========== */
+.sylvie-sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sylvie-sidebar.active {
+    right: 0;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.sidebar-items {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 4rem;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    text-decoration: none;
+    color: var(--charcoal-brown);
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background: linear-gradient(145deg, rgba(176, 20, 58, 0.04), rgba(176, 20, 58, 0.01));
+    color: var(--berry-red);
+    transform: translateX(-5px);
+}
+
+.sidebar-item .icon-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.06), -2px -2px 6px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.sidebar-item:hover .icon-circle {
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.08), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+    transform: scale(0.95);
+}
+
+.sidebar-item svg {
+    width: 30px;
+    height: 30px;
+}
+
+.sidebar-item span {
+    font-family: 'Poppins', sans-serif;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(176, 20, 58, 0.1), transparent);
+    margin: 0.5rem 0;
+}
+
+.sidebar-footer {
+    padding-top: 2rem;
+    border-top: 1px solid rgba(176, 20, 58, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: var(--charcoal-brown);
+    opacity: 0.7;
+}
+
+.sidebar-footer span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 0.5px;
+}
+
+/* Main Content Shift when Sidebar Active */
+#mainContent {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#mainContent.shifted {
+    transform: translateX(-320px);
+}
+
+/* Profile Icon as Toggle Button */
+.profile-icon {
+    cursor: pointer;
+    user-select: none;
+}
+
+.profile-icon:active {
+    transform: scale(0.95);
+}

@@ -1,0 +1,15 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M25 5 L28 18 L41 18 L31 26 L34 39 L25 31 L16 39 L19 26 L9 18 L22 18 Z" 
+        stroke="#F4C542" 
+        stroke-width="2.5" 
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        style="filter: url(#roughen);"/>
+  <defs>
+    <filter id="roughen">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
